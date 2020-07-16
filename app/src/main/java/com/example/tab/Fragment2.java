@@ -64,9 +64,6 @@ public class Fragment2 extends Fragment {
 
     //constants
     private static final int NUM_GRID_COLUMNS = 3;
-    private static final int CAMERA_REQUEST_CODE = 5;
-    private int STORAGE_PERMISSION_CODE = 1;
-    private int CAMERA_PERMISSION_CODE = 2;
 
     //widgets
     private GridView gridView;
@@ -87,21 +84,6 @@ public class Fragment2 extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-        } else {
-            requestStorageWritePermission();
-        }
-
-
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-        } else {
-            requestCameraPermission();
-        }
-
-
-
         View view = inflater.inflate(R.layout.fragment2_layout, container, false);
         galleryImage = (ImageView) view.findViewById(R.id.galleryImageView);
         gridView = (GridView) view.findViewById(R.id.gridView);
@@ -407,68 +389,4 @@ public class Fragment2 extends Fragment {
         }
     }
      */
-
-
-    private void requestStorageWritePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Permission needed")
-                    .setMessage("'Access to media' permission is needed to read files in the gallery")
-                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(getActivity(),
-                                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-                        }
-                    })
-                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create().show();
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-        }
-    }
-
-    private void requestCameraPermission(){
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                Manifest.permission.CAMERA)) {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Permission needed")
-                    .setMessage("'Camera' permission is needed to take photos")
-                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(getActivity(),
-                                    new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
-                        }
-                    })
-                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create().show();
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == STORAGE_PERMISSION_CODE)  {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getActivity(), "Permission GRANTED", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getActivity(), "Permission DENIED", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 }
