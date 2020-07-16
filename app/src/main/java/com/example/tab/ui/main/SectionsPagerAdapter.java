@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.madcamp_second.Contact.ContactFragment;
-import com.example.tab.Fragment1;
 import com.example.tab.Fragment2;
 import com.example.tab.Fragment3;
 import com.example.tab.R;
