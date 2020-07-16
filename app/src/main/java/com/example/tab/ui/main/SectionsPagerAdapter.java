@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.tab.Fragment1;
+import com.example.madcamp_second.Contact.ContactFragment;
 import com.example.tab.Fragment2;
 import com.example.tab.Fragment3;
 import com.example.tab.R;
@@ -36,7 +36,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         Fragment fragment = null;
         switch (position){
             case 0:
-                fragment = new Fragment1();
+                fragment = ContactFragment.newInstance();
                 break;
             case 1:
                 fragment = new Fragment2();
