@@ -1,9 +1,14 @@
 package com.example.tab;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
@@ -21,14 +26,28 @@ import com.facebook.appevents.AppEventsLogger;
 
 import com.example.tab.ui.main.SectionsPagerAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigDecimal;
 import java.util.Currency;
+
+import kotlin.Unit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Url;
 
 public class MainActivity extends AppCompatActivity {
     public static Context context;
     private TextView myMessage;
     private Context mContext = MainActivity.this;
-
+    public static String userId = null;
+    private CallbackManager callbackManager;
+    private AccessTokenTracker accessTokenTracker;
+    private String url = "http://192.249.19.244:2280/";
+    private String graphUrl = "https://graph.facebook.com/";
 
     private static final String TAG = "MyMessage";
     @Override
@@ -69,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "onDestroy");
-
+        accessTokenTracker.stopTracking();
     }
 
     @Override
@@ -94,9 +113,22 @@ public class MainActivity extends AppCompatActivity {
         // facebook stuff
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        callbackManager = CallbackManager.Factory.create();
 
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(
+                    AccessToken oldAccessToken,
+                    AccessToken currentAccessToken) {
+                // Set the access token using
+                // currentAccessToken when it's loaded or set.
+                AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                saveToDatabase(accessToken);
+            }
+        };
+        accessTokenTracker.startTracking();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        saveToDatabase(accessToken);
 
         //logger.logPurchase(BigDecimal.valueOf(4.32), Currency.getInstance("USD"));
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
@@ -106,6 +138,40 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
 
+    private void saveToDatabase(AccessToken accessToken) {
+        /* Check login info */
+        if (accessToken == null || accessToken.isExpired()) {
+            return;
+        }
+        userId = accessToken.getUserId();
+        if (userId == null) {
+            return;
+        }
 
+        /* Init retrofit */
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(String.valueOf(this.url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        AccountService service = retrofit.create(AccountService.class);
+
+        service.addAccount(userId).enqueue(new Callback<Unit>() {
+            @Override
+            public void onResponse(@NotNull Call<Unit> call, @NotNull Response<Unit> response) {
+                Log.d("AccountService", "res:" + response);
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<Unit> call, @NotNull Throwable t) {
+                Log.d("AccountService", "Failed API call with call: " + call
+                        + ", exception:  " + t);
+            }
+        });
+    }
 }

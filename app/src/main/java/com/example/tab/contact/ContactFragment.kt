@@ -21,8 +21,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tab.MainActivity.userId
 import com.example.tab.R
 import com.example.tab.contact.ContactService
+import com.facebook.AccessToken
 import com.google.gson.JsonObject
 import org.json.JSONObject
 import retrofit2.Call
@@ -208,6 +210,10 @@ class ContactFragment : Fragment() {
     }
 
     private fun saveToDatabase(contacts: List<Contact>) {
+        /* Check login info */
+        if (userId == null) {
+            return
+        }
         /* Init retrofit */
         val retrofit = Retrofit.Builder()
                 .baseUrl(this.url)
@@ -225,14 +231,14 @@ class ContactFragment : Fragment() {
             val body = HashMap<String, JsonObject>()
             body["user"] = info
 
-            service.addContact(body)?.enqueue(object: Callback<String> {
-                override fun onFailure(call: Call<String>, t: Throwable) {
+            service.addContact(userId, body).enqueue(object: Callback<Unit> {
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
                     Log.d("ContactService", "Failed API call with call: " + call
                             + ", exception:  " + t)
                 }
 
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    Log.d("ContactService", "res:" + response.body().toString())
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                    Log.d("ContactService", "res:$response")
                 }
             })
         }
