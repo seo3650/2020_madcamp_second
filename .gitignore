@@ -2,6 +2,7 @@
 .gradle
 /.idea/gradle.xml
 /.idea/
+/app/src/main/res/values/secret_key.xml
 /local.properties
 /.idea/caches
 /.idea/libraries
