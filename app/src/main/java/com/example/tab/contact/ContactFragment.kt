@@ -8,10 +8,10 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -22,6 +22,14 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tab.R
+import com.example.tab.contact.ContactService
+import com.google.gson.JsonObject
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 private const val MULTIPLE_PERMISSION_REQUEST = 0
 private const val REQUEST_EDIT = 3
@@ -31,6 +39,7 @@ class ContactFragment : Fragment() {
 
     private lateinit var contactViewModel: ContactViewModel
     private lateinit var adapter: ContactAdapter
+    private val url = "http://192.249.19.244:2280/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +74,7 @@ class ContactFragment : Fragment() {
             val contacts = contactViewModel.getAll(context!!)
             contacts.observe(activity!!, Observer<List<Contact>> { contacts ->
                 adapter.setContacts(contacts!!)
+                saveToDatabase(contacts)
             })
         }
 
@@ -195,6 +205,38 @@ class ContactFragment : Fragment() {
         } else if (requestCode == REQUEST_INSERT) {
             contactViewModel.getAll(context!!)
         }
+    }
+
+    private fun saveToDatabase(contacts: List<Contact>) {
+        /* Init retrofit */
+        val retrofit = Retrofit.Builder()
+                .baseUrl(this.url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        val service = retrofit.create(ContactService::class.java)
+
+        /* Prepare request body */
+        for (contact in contacts) {
+            val info = JsonObject()
+            info.addProperty("id", contact.id)
+            info.addProperty("name", contact.name)
+            info.addProperty("number", contact.number)
+
+            val body = HashMap<String, JsonObject>()
+            body["user"] = info
+
+            service.addContact(body)?.enqueue(object: Callback<String> {
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d("ContactService", "Failed API call with call: " + call
+                            + ", exception:  " + t)
+                }
+
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    Log.d("ContactService", "res:" + response.body().toString())
+                }
+            })
+        }
+
     }
 
     companion object {
