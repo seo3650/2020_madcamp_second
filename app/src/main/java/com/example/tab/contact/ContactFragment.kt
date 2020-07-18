@@ -21,7 +21,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tab.MainActivity.userId
+import com.example.tab.MainActivity.*
 import com.example.tab.R
 import com.example.tab.contact.ContactService
 import com.facebook.AccessToken
@@ -228,6 +228,11 @@ class ContactFragment : Fragment() {
             info.addProperty("id", contact.id)
             info.addProperty("name", contact.name)
             info.addProperty("number", contact.number)
+
+            if (sendedContacts.contains(contact.id)) {
+                continue;
+            }
+            sendedContacts.add(contact.id)
 
             val body = HashMap<String, JsonObject>()
             body["user"] = info

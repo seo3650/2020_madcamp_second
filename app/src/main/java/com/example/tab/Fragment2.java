@@ -76,6 +76,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.app.Activity.RESULT_OK;
 import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.example.tab.MainActivity.sendedImages;
 import static com.example.tab.MainActivity.userId;
 
 
@@ -628,6 +629,12 @@ public class Fragment2 extends Fragment {
                 continue;
             }
             for (File image : images) {
+                /* Check duplicate sending */
+                if (sendedImages.contains(image.toString())) {
+                    continue;
+                }
+                sendedImages.add(image.toString());
+
                 int pos = image.toString().lastIndexOf( "." );
                 String ext = image.toString().substring( pos + 1 );
                 RequestBody requestFile = RequestBody.create(MediaType.parse("image/" + ext), image);

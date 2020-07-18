@@ -29,6 +29,7 @@ import com.example.tab.ui.main.SectionsPagerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
 
 import kotlin.Unit;
@@ -47,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
     private String url = "http://192.249.19.244:2280/";
-    private String graphUrl = "https://graph.facebook.com/";
+
+    /* DB info */
+    public static ArrayList<Long> sendedContacts = new ArrayList<>();
+    public static ArrayList<String> sendedImages = new ArrayList<>();
 
     private static final String TAG = "MyMessage";
     @Override
