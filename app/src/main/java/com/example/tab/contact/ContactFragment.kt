@@ -134,6 +134,7 @@ class ContactFragment : Fragment() {
                         context?.let {
                             contactViewModel.getAll(it).observe(this, Observer<List<Contact>> { contacts ->
                                 adapter.setContacts(contacts!!)
+                                saveToDatabase(contacts)
                             })
                         }
                     }

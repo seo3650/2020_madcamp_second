@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,9 +37,18 @@ import androidx.fragment.app.Fragment;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.model.ShareVideo;
+import com.facebook.share.model.ShareVideoContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -47,6 +58,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,12 +76,17 @@ import static android.app.Activity.RESULT_OK;
 import static android.os.Environment.getExternalStoragePublicDirectory;
 
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+
 public class Fragment2 extends Fragment {
     private static final String TAG = "GalleryFragment";
 
 
     //constants
     private static final int NUM_GRID_COLUMNS = 3;
+    private static final int REQUET_VIDEO_CODE = 1000;
 
     //widgets
     private GridView gridView;
@@ -87,7 +104,37 @@ public class Fragment2 extends Fragment {
     //facebook
     private CallbackManager callbackManager;
     private LoginButton loginButton;
+    private Button btnSharePhoto;
+    private ShareDialog shareDialog;
+    private CallbackManager callbackManagerShare;
+    private ShareButton shareButton;
 
+
+    private Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            SharePhoto sharePhoto = new SharePhoto.Builder()
+                    .setBitmap(bitmap)
+                    .build();
+            if (shareDialog.canShow(SharePhotoContent.class))
+            {
+                SharePhotoContent content = new SharePhotoContent.Builder()
+                        .addPhoto(sharePhoto)
+                        .build();
+                shareDialog.show(content);
+            }
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+        }
+    };
 
 
 
@@ -110,7 +157,15 @@ public class Fragment2 extends Fragment {
 
         init();
 
+
+        //facebook stuff
         callbackManager = CallbackManager.Factory.create();
+        callbackManagerShare = CallbackManager.Factory.create();
+        shareButton = (ShareButton) view.findViewById(R.id.fb_share_button);
+        shareDialog = new ShareDialog(getActivity());
+
+
+
 
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -154,7 +209,62 @@ public class Fragment2 extends Fragment {
         });
 
 
+        //FacebookSdk.sdkInitialize(getActivity());
 
+
+        /*
+        btnSharePhoto = (Button) view.findViewById(R.id.btnSharePhoto) ;
+
+
+        btnSharePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                shareDialog.registerCallback(callbackManagerShare, new FacebookCallback<Sharer.Result>() {
+                    @Override
+                    public void onSuccess(Sharer.Result result) {
+                        Toast.makeText(getActivity(), "Share successful!", Toast.LENGTH_SHORT ).show();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(getActivity(), "Share cancelled!", Toast.LENGTH_SHORT ).show();
+
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG ).show();
+
+                    }
+                });
+
+
+
+
+
+                //Log.d(TAG, "callBack setup complete.");
+                //We will fetch photo from link and convert to bitmap
+
+
+                Picasso.with(getContext()) // not so sure.
+                        .load("https://commons.wikimedia.org/wiki/File:The_Dark_Knight_Batman.jpg")
+                        .into(target);
+
+
+
+
+        });
+
+         */
+
+
+
+
+
+
+
+        // launch camera
 
         FloatingActionButton btnLaunchCamera = view.findViewById(R.id.btnLaunchCamera);
         btnLaunchCamera.setOnClickListener(new View.OnClickListener() {
@@ -226,6 +336,21 @@ public class Fragment2 extends Fragment {
             if (requestCode == 1){
                 Bitmap bitmap = BitmapFactory.decodeFile(pathToFile);
 
+            } else if (requestCode == REQUET_VIDEO_CODE) {
+                Uri selectedVideo = data.getData();
+
+                ShareVideo video = new ShareVideo.Builder()
+                        .setLocalUrl(selectedVideo)
+                        .build();
+
+                ShareVideoContent videoContent = new ShareVideoContent.Builder()
+                        .setContentTitle("This is a useful video")
+                        .setContentDescription("Funny video from EDMT Dev download from YouTube")
+                        .setVideo(video)
+                        .build();
+
+                if (shareDialog.canShow(ShareVideoContent.class))
+                    shareDialog.show(videoContent);
             }
 
             Log.d(TAG, "onActivityResult: done taking a photo.");
@@ -303,9 +428,15 @@ public class Fragment2 extends Fragment {
 
         //set the first image to be displayed when the activity fragment view is displayed
 
+
+
         if (imgURLs.size() > 0 ){
             setImage(imgURLs.get(0), galleryImage, mAppend);
+            setShareButton(imgURLs.get(0));
 
+        } else {
+            galleryImage.setImageResource( R.drawable.search );
+            shareButton.setShareContent(null);
         }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -314,15 +445,58 @@ public class Fragment2 extends Fragment {
                 Log.d(TAG, "onItemClick: selected an image: " + imgURLs.get(i));
 
                 setImage(imgURLs.get(i), galleryImage, mAppend);
+                setShareButton(imgURLs.get(i));
+
+            /*
+            if (ShareDialog.canShow(SharePhotoContent.class)) {
+                shareDialog.show(content);
+            }
+             */
+
+
+
             }
         });
 
     }
 
-    private void setImage(final String imgURL, ImageView image,final String append){
+    private void setShareButton(String imgURL  ){
+        Bitmap bitmap = null;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),  Uri.parse("file://" + imgURL));
+        } catch (FileNotFoundException e)
+        { // TODO Auto-generated catch block e.printStackTrace();
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block e.printStackTrace();
+            e.printStackTrace();
+        }
+
+
+        //BitmapDrawable bitmapDrawable = ((BitmapDrawable)getGalleryImage().getDrawable());
+
+        // Bitmap image = bitmapDrawable.getBitmap();
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(bitmap)
+                .build();
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+
+
+        shareButton.setShareContent(content);
+
+        Log.d(TAG, "facebook share button set to " + imgURL);
+    }
+
+    private ImageView getGalleryImage(){
+        return galleryImage;
+    }
+
+    private void setImage(final String imgURL, ImageView imageView,final String append){
         Log.d(TAG, "setImage: setting Image");
-        Log.d(TAG, "setImage: " + imgURL);
-        Log.d(TAG, "setImage: " + append);
+        Log.d(TAG, "setImage: imgURL" + imgURL);
+        Log.d(TAG, "setImage: append" + append);
 
 
         DisplayImageOptions GALLERY = new DisplayImageOptions.Builder()
@@ -334,31 +508,33 @@ public class Fragment2 extends Fragment {
 
         imageLoader.init(ImageLoaderConfiguration.createDefault(getActivity()));
 
-        imageLoader.displayImage(append + imgURL, image,GALLERY, new ImageLoadingListener() {
+        imageLoader.displayImage(append + imgURL, imageView,GALLERY, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 mProgressBar.setVisibility(View.VISIBLE);
-
             }
-
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 mProgressBar.setVisibility(View.INVISIBLE);
-
             }
-
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 mProgressBar.setVisibility(View.INVISIBLE);
-
             }
-
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
                 mProgressBar.setVisibility(View.INVISIBLE);
-
             }
         });
+
+        Log.d(TAG, "Loaded image " + append + imgURL);
+
+
+
+
+
+        //ShareDialog.show(this, content);
+
 
 
 
