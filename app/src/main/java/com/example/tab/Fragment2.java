@@ -79,9 +79,6 @@ import static android.os.Environment.getExternalStoragePublicDirectory;
 import static com.example.tab.MainActivity.userId;
 
 
-// import com.squareup.picasso.Picasso;
-// import com.squareup.picasso.Target;
-
 
 public class Fragment2 extends Fragment {
     private static final String TAG = "GalleryFragment";
@@ -115,36 +112,6 @@ public class Fragment2 extends Fragment {
 
     private String url = "http://192.249.19.244:2280/";
 
-    /*
-    private Target target = new Target() {
-        @Override
-        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            SharePhoto sharePhoto = new SharePhoto.Builder()
-                    .setBitmap(bitmap)
-                    .build();
-            if (shareDialog.canShow(SharePhotoContent.class))
-            {
-                SharePhotoContent content = new SharePhotoContent.Builder()
-                        .addPhoto(sharePhoto)
-                        .build();
-                shareDialog.show(content);
-            }
-        }
-
-
-
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable) {
-
-        }
-
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-        }
-    };
-
-     */
 
 
 
@@ -221,52 +188,6 @@ public class Fragment2 extends Fragment {
 
         //FacebookSdk.sdkInitialize(getActivity());
 
-
-        /*
-        btnSharePhoto = (Button) view.findViewById(R.id.btnSharePhoto) ;
-
-
-        btnSharePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                shareDialog.registerCallback(callbackManagerShare, new FacebookCallback<Sharer.Result>() {
-                    @Override
-                    public void onSuccess(Sharer.Result result) {
-                        Toast.makeText(getActivity(), "Share successful!", Toast.LENGTH_SHORT ).show();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Toast.makeText(getActivity(), "Share cancelled!", Toast.LENGTH_SHORT ).show();
-
-                    }
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG ).show();
-
-                    }
-                });
-
-
-
-
-
-                //Log.d(TAG, "callBack setup complete.");
-                //We will fetch photo from link and convert to bitmap
-
-
-                Picasso.with(getContext()) // not so sure.
-                        .load("https://commons.wikimedia.org/wiki/File:The_Dark_Knight_Batman.jpg")
-                        .into(target);
-
-
-
-
-        });
-
-         */
 
 
 

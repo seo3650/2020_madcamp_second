@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -56,7 +57,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.widget.Toast;
-
+import androidx.appcompat.widget.Toolbar;
 import java.nio.file.Files;
 import java.util.Date;
 
@@ -89,6 +90,9 @@ public class Fragment4 extends Fragment {
     private LoginButton loginButton;
 
 
+    //pokemon
+    Toolbar toolbar;
+
 
 
     @Nullable
@@ -99,6 +103,18 @@ public class Fragment4 extends Fragment {
 
         Log.d(TAG, "onCreateView: started.");
 
+
+        /*
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar2);
+        toolbar.setTitle("POKEMON LIST");
+        setSupportActionBar(toolbar);
+
+         */
+
+
+
+
+        /*
         callbackManager = CallbackManager.Factory.create();
 
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -118,6 +134,8 @@ public class Fragment4 extends Fragment {
                         // App code
                     }
                 });
+
+
 
         loginButton = (LoginButton) view.findViewById(R.id.login_button);
         loginButton.setReadPermissions("email");
@@ -141,6 +159,8 @@ public class Fragment4 extends Fragment {
                 // App code
             }
         });
+
+         */
 
 
         return view;
