@@ -27,14 +27,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.model.ShareVideo;
@@ -106,7 +99,6 @@ public class Fragment2 extends Fragment {
     private String pathToFile;
 
     //facebook
-    private CallbackManager callbackManager;
     private LoginButton loginButton;
     private Button btnSharePhoto;
     private ShareDialog shareDialog;
@@ -170,54 +162,8 @@ public class Fragment2 extends Fragment {
 
 
         //facebook stuff
-        callbackManager = CallbackManager.Factory.create();
-        callbackManagerShare = CallbackManager.Factory.create();
         shareButton = (ShareButton) view.findViewById(R.id.fb_share_button);
         shareDialog = new ShareDialog(getActivity());
-
-
-
-
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // App code
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        // App code
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code
-                    }
-                });
-
-        loginButton = (LoginButton) view.findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
-        // If using in a fragment
-        loginButton.setFragment(this);
-
-        // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                // App code
-            }
-
-            @Override
-            public void onCancel() {
-                // App code
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
-            }
-        });
 
 
         //FacebookSdk.sdkInitialize(getActivity());
@@ -371,9 +317,6 @@ public class Fragment2 extends Fragment {
 
             init();
         }
-
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-
     }
 
     private void init(){
@@ -620,7 +563,7 @@ public class Fragment2 extends Fragment {
         ImageService service = retrofit.create(ImageService.class);
 
         /* Get storage */
-        // TODO: Upload serveral image at a time
+        // TODO: Upload serveral images at a time
         File[] storageDirs = {new File(FilePaths.CAMERA), new File(FilePaths.DOWNLOAD), new File (FilePaths.PICTURES)};
         for (File storageDir : storageDirs) {
             /* Get image */

@@ -96,18 +96,6 @@
         app:layout_constraintVertical_bias="0.593" />
 
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="184dp"
-        app:layout_constraintBottom_toBottomOf="@+id/gridView"
-        app:layout_constraintEnd_toEndOf="@+id/galleryImageView"
-        app:layout_constraintHorizontal_bias="0.931"
-        app:layout_constraintStart_toStartOf="@+id/galleryImageView" />
-
-
     <com.facebook.share.widget.ShareButton
         android:id="@+id/fb_share_button"
         android:layout_width="wrap_content"
