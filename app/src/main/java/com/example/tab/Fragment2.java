@@ -79,8 +79,8 @@ import static android.os.Environment.getExternalStoragePublicDirectory;
 import static com.example.tab.MainActivity.userId;
 
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+// import com.squareup.picasso.Picasso;
+// import com.squareup.picasso.Target;
 
 
 public class Fragment2 extends Fragment {
@@ -115,6 +115,7 @@ public class Fragment2 extends Fragment {
 
     private String url = "http://192.249.19.244:2280/";
 
+    /*
     private Target target = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -130,6 +131,8 @@ public class Fragment2 extends Fragment {
             }
         }
 
+
+
         @Override
         public void onBitmapFailed(Drawable errorDrawable) {
 
@@ -140,6 +143,8 @@ public class Fragment2 extends Fragment {
 
         }
     };
+
+     */
 
 
 

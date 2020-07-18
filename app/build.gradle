@@ -57,7 +57,7 @@ dependencies {
     // facebook SDK compilation
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
 
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    //implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.facebook.android:facebook-share:[5,6)'
 
 

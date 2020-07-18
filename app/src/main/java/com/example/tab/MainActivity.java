@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
         // facebook stuff
         FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
+        AppEventsLogger.activateApp(getApplication());
         callbackManager = CallbackManager.Factory.create();
 
         accessTokenTracker = new AccessTokenTracker() {
