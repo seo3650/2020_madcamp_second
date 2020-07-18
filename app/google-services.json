@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "191595940718",
+    "firebase_url": "https://madcamp-second.firebaseio.com",
+    "project_id": "madcamp-second",
+    "storage_bucket": "madcamp-second.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191595940718:android:c20530d624bd1b80d74f7f",
+        "android_client_info": {
+          "package_name": "com.example.tab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "191595940718-lf2tvm67nsuh5h2blmh5qtmaeo1lu80n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsCFNo4zRA8ZEOi764RLa9MnAPpd-UwJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "191595940718-lf2tvm67nsuh5h2blmh5qtmaeo1lu80n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

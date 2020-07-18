@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 // facebook SDK imports.
@@ -29,6 +30,7 @@ import com.example.tab.ui.main.SectionsPagerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Currency;
 
 import kotlin.Unit;
@@ -44,10 +46,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView myMessage;
     private Context mContext = MainActivity.this;
     public static String userId = null;
-    private CallbackManager callbackManager;
-    private AccessTokenTracker accessTokenTracker;
     private String url = "http://192.249.19.244:2280/";
-    private String graphUrl = "https://graph.facebook.com/";
+
+    private int REQUEST_LOGIN = 2;
+
+    /* DB info */
+    public static ArrayList<Long> sendedContacts = new ArrayList<>();
+    public static ArrayList<String> sendedImages = new ArrayList<>();
 
     private static final String TAG = "MyMessage";
     @Override
@@ -88,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "onDestroy");
-        accessTokenTracker.stopTracking();
     }
 
     @Override
@@ -109,27 +113,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         // facebook stuff
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(getApplication());
-        callbackManager = CallbackManager.Factory.create();
+        /* Login indent */
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivityForResult(intent, REQUEST_LOGIN);
 
-        accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(
-                    AccessToken oldAccessToken,
-                    AccessToken currentAccessToken) {
-                // Set the access token using
-                // currentAccessToken when it's loaded or set.
-                AccessToken accessToken = AccessToken.getCurrentAccessToken();
-                saveToDatabase(accessToken);
-            }
-        };
-        accessTokenTracker.startTracking();
-        AppEventsLogger.activateApp(getApplication());
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        saveToDatabase(accessToken);
+        /* Save account info */
+        saveToDatabase();
 
         //logger.logPurchase(BigDecimal.valueOf(4.32), Currency.getInstance("USD"));
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
@@ -142,15 +134,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                userId = data.getStringExtra("userId");
+                Toast.makeText(MainActivity.this, "Login success", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MainActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
-    private void saveToDatabase(AccessToken accessToken) {
+    private void saveToDatabase() {
         /* Check login info */
-        if (accessToken == null || accessToken.isExpired()) {
-            return;
-        }
-        userId = accessToken.getUserId();
         if (userId == null) {
             return;
         }
