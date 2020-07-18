@@ -7,10 +7,10 @@ import java.io.File;
 public class FilePaths {
 
     //"storage/emulated/0"
-    public String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
+    public static String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
 
-    public String PICTURES = ROOT_DIR + "/Pictures";
-    public String CAMERA = ROOT_DIR + "/DCIM/Camera";
-    public String DOWNLOAD = ROOT_DIR + "/Download";
+    public static String PICTURES = ROOT_DIR + "/Pictures";
+    public static String CAMERA = ROOT_DIR + "/DCIM/Camera";
+    public static String DOWNLOAD = ROOT_DIR + "/Download";
     //public String DOCUMENT = ROOT_DIR +"/document";
 }
