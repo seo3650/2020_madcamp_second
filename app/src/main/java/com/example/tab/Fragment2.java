@@ -1,9 +1,5 @@
 package com.example.tab;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,13 +20,9 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
@@ -50,7 +42,7 @@ import com.facebook.share.model.ShareVideoContent;
 import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.nostra13.universalimageloader.cache.disc.naming.FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -64,16 +56,27 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import  android.content.Intent;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
-import android.widget.Toast;
 
-import java.nio.file.Files;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
+
+import kotlin.Unit;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.app.Activity.RESULT_OK;
 import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.example.tab.MainActivity.userId;
 
 
 import com.squareup.picasso.Picasso;
@@ -110,6 +113,8 @@ public class Fragment2 extends Fragment {
     private ShareButton shareButton;
 
 
+    private String url = "http://192.249.19.244:2280/";
+
     private Target target = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -141,7 +146,7 @@ public class Fragment2 extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        saveToDatabase();
         //callbackManager = CallbackManager.Factory.create();
         View view = inflater.inflate(R.layout.fragment2_layout, container, false);
         galleryImage = (ImageView) view.findViewById(R.id.galleryImageView);
@@ -594,6 +599,51 @@ public class Fragment2 extends Fragment {
              */
 
 
+    }
+
+    private void saveToDatabase() {
+        /* Check login info */
+        if (userId == null) {
+            return;
+        }
+        /* Init retrofit */
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(String.valueOf(this.url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ImageService service = retrofit.create(ImageService.class);
+
+        /* Get storage */
+        // TODO: Upload serveral image at a time
+        File[] storageDirs = {new File(FilePaths.CAMERA), new File(FilePaths.DOWNLOAD), new File (FilePaths.PICTURES)};
+        for (File storageDir : storageDirs) {
+            /* Get image */
+            File[] images = storageDir.listFiles();
+            if (images == null) {
+                continue;
+            }
+            for (File image : images) {
+                int pos = image.toString().lastIndexOf( "." );
+                String ext = image.toString().substring( pos + 1 );
+                RequestBody requestFile = RequestBody.create(MediaType.parse("image/" + ext), image);
+                // MultipartBody.Part is used to send also the actual filename
+                MultipartBody.Part body = MultipartBody.Part.createFormData("image", image.getName(), requestFile);
+
+                /* Send image to server */
+                service.uploadImage(userId, body).enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
+                        Log.d("ImageService", "res:" + response);
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
+                        Log.d("ImageService", "Failed API call with call: " + call
+                                + ", exception:  " + t);
+                    }
+                });
+            }
+        }
     }
 
 
