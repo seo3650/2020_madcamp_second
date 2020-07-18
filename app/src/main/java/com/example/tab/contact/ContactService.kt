@@ -8,5 +8,7 @@ interface ContactService {
     @Headers("accept: application/json",
             "content-type: application/json")
     @POST("/contact/register")
-    fun addContact(@Body params: HashMap<String, JsonObject>): Call<String>
+    fun addContact(@Header("userId") userId: String,
+                   @Body params: HashMap<String, JsonObject>)
+            : Call<Unit>
 }
