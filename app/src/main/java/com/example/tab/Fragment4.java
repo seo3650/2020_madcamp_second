@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
@@ -32,6 +33,9 @@ import java.util.ArrayList;
 import  android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import java.util.Objects;
+
+import static android.content.Context.CAMERA_SERVICE;
 import java.util.Objects;
 
 import static android.content.Context.CAMERA_SERVICE;
