@@ -44,6 +44,7 @@ import java.util.Objects;
 import static android.content.Context.CAMERA_SERVICE;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -195,6 +196,10 @@ public class Fragment4 extends Fragment {
                                 saveToDatabase(file, matches.get(i) );
                                 Log.d(TAG, "uploaded image with label " + matches.get(i));
                                 //fetchData(items);
+
+                                FragmentTransaction tr = getFragmentManager().beginTransaction();
+                                tr.replace(R.id.fragment4_layout, new Fragment4() );
+                                tr.commit();
 
                             }
 
