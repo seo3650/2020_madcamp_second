@@ -2,6 +2,7 @@ package com.example.tab;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -28,6 +29,8 @@ import androidx.fragment.app.Fragment;
 import com.facebook.internal.ImageResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -51,6 +54,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Date;
 
 import kotlin.Unit;
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -84,6 +90,7 @@ public class Fragment4 extends Fragment {
     private ProgressBar mProgressBar;
     private Spinner directorySpinner;
     private Button deleteButton;
+    private KonfettiView konfettiView;
 
 
     //vars
@@ -102,14 +109,23 @@ public class Fragment4 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment4_layout, container, false);
         items = new ArrayList<>(Arrays.asList("Computer", "Mobile Phone", "Clock", "Chair"));
-
-
+        konfettiView = view.findViewById(R.id.konfettiView);
+        konfettiView.bringToFront();
+        konfettiView.setElevation(3000);
         Log.d(TAG, "onCreateView: started.");
         Log.d(TAG, "items initialized: " +items.toString());
+
+        /* Show loading */
+        SweetAlertDialog pDialog = new SweetAlertDialog(Objects.requireNonNull(getContext()), SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        pDialog.setTitleText("Loading");
+        pDialog.setCancelable(false);
+        pDialog.show();
 
         getFromDatabase("test", new ImageResponse() {
             @Override
             public void onResponseReceived(Bitmap res) {
+                pDialog.dismissWithAnimation();
                 if (res == null) {
                     Log.d("ImageService", "Download Failed");
                     return;
@@ -184,6 +200,13 @@ public class Fragment4 extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CAMERA) {
             if (resultCode == RESULT_OK) {
+                /* Show loading */
+                SweetAlertDialog pDialog = new SweetAlertDialog(Objects.requireNonNull(getContext()), SweetAlertDialog.PROGRESS_TYPE);
+                pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+                pDialog.setTitleText("Loading");
+                pDialog.setCancelable(false);
+                pDialog.show();
+                /* Process image */
                 getLabelOfImage(new LabelsResponse() {
                     @Override
                     public void onResponseReceived(ArrayList<String> res) {
@@ -199,6 +222,30 @@ public class Fragment4 extends Fragment {
                                 saveToDatabase(file, matches.get(i), new DatabaseResponse() {
                                     @Override
                                     public void onResponseReceived() {
+                                        /* Success message */
+                                        konfettiView.build()
+                                                .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                                                .setDirection(0.0, 359.0)
+                                                .setSpeed(1f, 5f)
+                                                .setFadeOutEnabled(true)
+                                                .setTimeToLive(2000L)
+                                                .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+                                                .addSizes(new Size(12, 5f))
+                                                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                                                .streamFor(300, 5000L);
+
+                                        pDialog.dismissWithAnimation();
+                                        new SweetAlertDialog(Objects.requireNonNull(getContext()), SweetAlertDialog.SUCCESS_TYPE)
+                                                .setTitleText("Success!")
+                                                .setContentText("Good job:)")
+                                                .setConfirmText("Okay")
+                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                    @Override
+                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                        sDialog.dismissWithAnimation();
+                                                    }
+                                                })
+                                                .show();
                                         FragmentTransaction tr = getFragmentManager().beginTransaction();
                                         tr.replace(R.id.fragment4_layout, new Fragment4() );
                                         tr.commit();
@@ -206,9 +253,20 @@ public class Fragment4 extends Fragment {
                                 });
                                 Log.d(TAG, "uploaded image with label " + matches.get(i));
                             }
-
-
-
+                        } else {
+                            /* Fail message */
+                            pDialog.dismissWithAnimation();
+                            new SweetAlertDialog(Objects.requireNonNull(getContext()), SweetAlertDialog.WARNING_TYPE)
+                                    .setTitleText("Failed..")
+                                    .setContentText("Try another image!")
+                                    .setConfirmText("Okay, I will:)")
+                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                        @Override
+                                        public void onClick(SweetAlertDialog sDialog) {
+                                            sDialog.dismissWithAnimation();
+                                        }
+                                    })
+                                    .show();
                         }
                     }
                 });
@@ -244,10 +302,6 @@ public class Fragment4 extends Fragment {
 
         Log.d(TAG, "matchLabels: pair " + pair.toString());
         return pair;
-
-
-
-
     }
 
 
