@@ -124,26 +124,12 @@ public class Fragment2 extends Fragment {
         Log.d(TAG, "onCreateView: started.");
 
         //ImageView shareClose
-
         init();
-
-
         //facebook stuff
         shareButton = (ShareButton) view.findViewById(R.id.fb_share_button);
         shareDialog = new ShareDialog(getActivity());
 
-
-        //FacebookSdk.sdkInitialize(getActivity());
-
-
-
-
-
-
-
-
         // launch camera
-
         FloatingActionButton btnLaunchCamera = view.findViewById(R.id.btnLaunchCamera);
         btnLaunchCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,8 +148,6 @@ public class Fragment2 extends Fragment {
 
                  */
                 dispatchPictureTakerAction();
-
-
             }
 
             private void dispatchPictureTakerAction(){
@@ -176,13 +160,7 @@ public class Fragment2 extends Fragment {
                     Uri photoURI = FileProvider.getUriForFile(getActivity(), "com.thecodecity.cameraandroid.fileprovider", photoFile);
                     takePic.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePic, 1);
-
-
-
                 }
-
-
-
             }
 
             private File createPhotoFile(){

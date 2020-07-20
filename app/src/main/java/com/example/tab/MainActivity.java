@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private Context mContext = MainActivity.this;
     public static String userId = null;
     private String url = "http://192.249.19.244:2280/";
-
     private int REQUEST_LOGIN = 2;
 
     /* DB info */
@@ -120,9 +119,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivityForResult(intent, REQUEST_LOGIN);
 
-        /* Save account info */
-        saveToDatabase();
-
         //logger.logPurchase(BigDecimal.valueOf(4.32), Currency.getInstance("USD"));
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
@@ -138,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 userId = data.getStringExtra("userId");
                 Toast.makeText(MainActivity.this, "Login success", Toast.LENGTH_SHORT).show();
+                /* Save account info */
+                saveToDatabase();
             } else {
                 Toast.makeText(MainActivity.this, "Login failed", Toast.LENGTH_SHORT).show();
             }

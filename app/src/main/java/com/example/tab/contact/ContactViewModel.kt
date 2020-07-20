@@ -40,7 +40,6 @@ class ContactViewModel(application: Application): AndroidViewModel(application) 
                     dataList.add(contact)
                 }
                 phoneCursor.close()
-
             }
 
         }

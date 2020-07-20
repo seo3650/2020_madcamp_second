@@ -27,16 +27,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         Log.d(TAG, "LoginActivity class: started.");
-        /* Check login */
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-        if (isLoggedIn) {
-            String userId = accessToken.getUserId();
-            Intent intent = new Intent();
-            intent.putExtra("userId", userId);
-            setResult(RESULT_OK, intent);
-            finish();
-        }
+
         /* Fast login */
         LoginManager.getInstance().retrieveLoginStatus(this, new LoginStatusCallback() {
             @Override
@@ -78,6 +69,17 @@ public class LoginActivity extends AppCompatActivity {
 
         LoginButton loginButton = this.findViewById(R.id.login_button);
         loginButton.setReadPermissions("email");
+
+        /* Check login */
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        if (isLoggedIn) {
+            String userId = accessToken.getUserId();
+            Intent intent = new Intent();
+            intent.putExtra("userId", userId);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     @Override
