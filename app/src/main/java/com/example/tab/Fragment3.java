@@ -48,26 +48,6 @@ public class Fragment3 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment3_layout, container, false);
-        /*
-        coinImageView = (ImageView) view.findViewById(R.id.coinImageView);
-        flipButton = (Button) view.findViewById(R.id.flipButton);
-        coinTextView = (TextView) view.findViewById(R.id.coinTextView);
-
-
-        flipButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                flipTheCoin();
-            }
-
-
-        });
-
-         */
-
-
-
-        // new implementation starts here
 
         image1 = (ImageView) view.findViewById(R.id.ImageView01);
         image2 = (ImageView) view.findViewById(R.id.ImageView02);

@@ -192,7 +192,9 @@ public class Fragment2 extends Fragment {
             if (requestCode == 1){
                 Bitmap bitmap = BitmapFactory.decodeFile(pathToFile);
 
-            } else if (requestCode == REQUET_VIDEO_CODE) {
+            }
+
+            /*else if (requestCode == REQUET_VIDEO_CODE) {
                 Uri selectedVideo = data.getData();
 
                 ShareVideo video = new ShareVideo.Builder()
@@ -209,12 +211,29 @@ public class Fragment2 extends Fragment {
                     shareDialog.show(videoContent);
             }
 
+             */
+
             Log.d(TAG, "onActivityResult: done taking a photo.");
             Log.d(TAG, "onActivityResult: attempting to return to gallery.");
 
             //navigate back to our gallery.
 
             init();
+        } else {
+            // delete undefined .jpg file
+            Log.d(TAG, "onActivityResults: camera aborted. Deleting temporary .jpg file");
+            File file = new File(pathToFile);
+            boolean deleted = file.delete();
+            if (deleted){
+                Log.d(TAG, pathToFile + " deleted successfully.");
+            } else {
+                Log.d(TAG, "failed to delete " + pathToFile);
+            }
+
+            getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+
+
+
         }
     }
 
