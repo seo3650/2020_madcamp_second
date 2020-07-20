@@ -1,5 +1,7 @@
 package com.example.tab;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -23,11 +25,13 @@ import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import com.facebook.internal.ImageResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -100,7 +104,17 @@ public class Fragment4 extends Fragment {
         Log.d(TAG, "onCreateView: started.");
         Log.d(TAG, "items initialized: " +items.toString());
 
-        getFromDatabase("default");
+        getFromDatabase("test", new ImageResponse() {
+            @Override
+            public void onResponseReceived(Bitmap res) {
+                if (res == null) {
+                    Log.d("ImageService", "Download Failed");
+                    return;
+                }
+                Log.d("ImageService", "Download Success");
+
+            }
+        });
 
 
         /*
@@ -154,6 +168,9 @@ public class Fragment4 extends Fragment {
 
     interface LabelsResponse {
         void onResponseReceived(ArrayList<String> res);
+    }
+    interface ImageResponse {
+        void onResponseReceived(Bitmap res);
     }
 
     @Override
@@ -245,7 +262,7 @@ public class Fragment4 extends Fragment {
         LabelOfImage.analyze(testImage, rotation, labelsResponse);
     }
 
-    private void getFromDatabase(String requiredImage) {
+    private void getFromDatabase(String requiredImage, ImageResponse imageResponse) {
         /* Check login info */
         if (userId == null) {
             return;
@@ -257,16 +274,20 @@ public class Fragment4 extends Fragment {
                 .build();
         ImageService service = retrofit.create(ImageService.class);
 
-        service.downloadImage(userId, requiredImage).enqueue(new Callback<ResponseBody>() {
+        service.downloadImage(userId, "dogam", requiredImage).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
                 Log.d("ImageService", "res:" + response.body());
+                InputStream stream = response.body().byteStream();
+                Bitmap image = BitmapFactory.decodeStream(stream);
+                imageResponse.onResponseReceived(image);
             }
 
             @Override
             public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
                 Log.d("ImageService", "Failed API call with call: " + call
                         + ", exception:  " + t);
+                imageResponse.onResponseReceived(null);
             }
         });
     }
@@ -288,10 +309,10 @@ public class Fragment4 extends Fragment {
         String ext = image.toString().substring( pos + 1 );
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/" + ext), image);
         // MultipartBody.Part is used to send also the actual filename
-        MultipartBody.Part body = MultipartBody.Part.createFormData("image", image.getName(), requestFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", answer, requestFile);
 
         /* Send image to server */
-        service.uploadImage(userId, answer, body).enqueue(new Callback<ResponseBody>() {
+        service.uploadImage(userId, "dogam", body).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
                 Log.d("ImageService", "res:" + response);

@@ -118,10 +118,6 @@ public class PokemonList extends Fragment {
 
     private void fetchData(){
 
-
-
-
-
         Retrofit retrofit = RetrofitClient.getInstance();
         iPokemonDex = retrofit.create(IPokemonDex.class);
 
