@@ -66,6 +66,7 @@ import static com.example.tab.MainActivity.url;
 import static com.example.tab.MainActivity.userId;
 
 
+
 public class Fragment4 extends Fragment {
     private static final String TAG = "DogamFragment";
 
@@ -73,7 +74,7 @@ public class Fragment4 extends Fragment {
     //constants
     private static final int NUM_GRID_COLUMNS = 3;
     private final int REQUEST_CAMERA = 1;
-    private static ArrayList<String> items;
+    static ArrayList<String> items;
 
 
     //widgets
@@ -99,7 +100,8 @@ public class Fragment4 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment4_layout, container, false);
-        items = new ArrayList<>(Arrays.asList("Computer", "Phone", "Clock", "Chair"));
+        items = new ArrayList<>(Arrays.asList("Computer", "Mobile Phone", "Clock", "Chair"));
+
 
         Log.d(TAG, "onCreateView: started.");
         Log.d(TAG, "items initialized: " +items.toString());
@@ -169,7 +171,7 @@ public class Fragment4 extends Fragment {
     interface LabelsResponse {
         void onResponseReceived(ArrayList<String> res);
     }
-    interface ImageResponse {
+    public interface ImageResponse {
         void onResponseReceived(Bitmap res);
     }
 
@@ -183,17 +185,33 @@ public class Fragment4 extends Fragment {
                     public void onResponseReceived(ArrayList<String> res) {
                         ArrayList<String> labels = res;
                         Log.d(TAG, "onActivityResult: labels = " + labels.toString());
-                        matchLabels(pathToFile, labels);
+                        Pair<String, ArrayList<String>> pair = matchLabels(pathToFile, labels);
+                        String path = pair.first;
+                        ArrayList<String> matches = pair.second;
+
+                        if (pair.first != null) {
+                            File file = new File(path);
+                            for (int i = 0; i < matches.size(); i++){
+                                saveToDatabase(file, matches.get(i) );
+                                Log.d(TAG, "uploaded image with label " + matches.get(i));
+                                //fetchData(items);
+
+                            }
+
+
+
+                        }
                     }
                 });
             } else {
 
                 // delete undefined .jpg file?
             }
+
         }
     }
 
-
+    // matches dogam labels with firebase image labels.
     private Pair<String, ArrayList<String>> matchLabels(String pathToFile, ArrayList<String> labels) {
 
         Log.d(TAG, "matchLabels: started with labels " + labels.toString());
@@ -262,7 +280,7 @@ public class Fragment4 extends Fragment {
         LabelOfImage.analyze(testImage, rotation, labelsResponse);
     }
 
-    private void getFromDatabase(String requiredImage, ImageResponse imageResponse) {
+     public static void getFromDatabase(String requiredImage, ImageResponse imageResponse) {
         /* Check login info */
         if (userId == null) {
             return;
@@ -278,6 +296,11 @@ public class Fragment4 extends Fragment {
             @Override
             public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
                 Log.d("ImageService", "res:" + response.body());
+                if (response.body() == null){
+                    imageResponse.onResponseReceived(null);
+                    return;
+
+                }
                 InputStream stream = response.body().byteStream();
                 Bitmap image = BitmapFactory.decodeStream(stream);
                 imageResponse.onResponseReceived(image);

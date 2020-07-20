@@ -1,6 +1,9 @@
 package com.example.tab.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +14,37 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.tab.Fragment4;
+import com.example.tab.ImageService;
 import com.example.tab.Model.Pokemon;
 import com.example.tab.R;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.InputStream;
 import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.tab.MainActivity.url;
+import static com.example.tab.MainActivity.userId;
+
+import static com.example.tab.Fragment4.getFromDatabase;
+import com.example.tab.Fragment4.ImageResponse;
+
 
 public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.MyViewHolder> {
 
     Context context;
-    List<Pokemon> pokemonList;
+    List<String> pokemonList;
 
 
-    public PokemonListAdapter(Context context, List<Pokemon> pokemonList) {
+    public PokemonListAdapter(Context context, List<String> pokemonList) {
         this.context = context;
         this.pokemonList = pokemonList;
     }
@@ -41,10 +63,30 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
+        holder.pokemon_name.setText(pokemonList.get(position));
+
+        getFromDatabase(  pokemonList.get(position)  ,new ImageResponse() {
+            @Override
+            public void onResponseReceived(Bitmap res) {
+                if (res == null) {
+                    Log.d("ImageService", "Download Failed");
+
+                    return;
+                }
+                Log.d("ImageService", "Download Success");
+
+                Glide.with(context).load(res).into(holder.pokemon_image);
+
+
+
+            }
+        });
+
         //Load image
-        Glide.with(context).load(pokemonList.get(position).getImg()).into(holder.pokemon_image);
+        //Glide.with(context).load(pokemonList.get(position).getImg()).into(holder.pokemon_image);
+
+
         //Set name
-        holder.pokemon_name.setText(pokemonList.get(position).getName());
 
     }
 
@@ -67,4 +109,9 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
         }
 
     }
+
+
+
+
+
 }

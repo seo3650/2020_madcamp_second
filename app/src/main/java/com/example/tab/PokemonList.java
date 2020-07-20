@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +18,16 @@ import com.example.tab.Model.Pokedex;
 import com.example.tab.Retrofit.IPokemonDex;
 import com.example.tab.Retrofit.RetrofitClient;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
+
+import static com.example.tab.Fragment4.items;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +36,7 @@ import retrofit2.Retrofit;
  */
 public class PokemonList extends Fragment {
 
+    private static final String TAG = "PokemonList";
 
     IPokemonDex iPokemonDex;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -110,17 +117,23 @@ public class PokemonList extends Fragment {
         ItemOffsetDecoration itemOffsetDecoration = new ItemOffsetDecoration(getActivity(), R.dimen.spacing);
         pokemon_list_recyclerview.addItemDecoration(itemOffsetDecoration);
 
-        fetchData();
+        fetchData(items);
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+        fetchData(items);
+    }
 
-    private void fetchData(){
+    private void fetchData(ArrayList<String> items){
 
         Retrofit retrofit = RetrofitClient.getInstance();
         iPokemonDex = retrofit.create(IPokemonDex.class);
-
+        /*
         compositeDisposable.add(iPokemonDex.getListPokemon()
         .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -136,6 +149,11 @@ public class PokemonList extends Fragment {
                 })
 
         );
+
+         */
+        PokemonListAdapter adapter = new PokemonListAdapter(getActivity(), items);
+        pokemon_list_recyclerview.setAdapter(adapter);
+
 
     }
 }
