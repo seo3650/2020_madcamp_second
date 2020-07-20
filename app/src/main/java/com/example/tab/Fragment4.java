@@ -45,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
 
+import kotlin.Unit;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -98,6 +99,9 @@ public class Fragment4 extends Fragment {
 
         Log.d(TAG, "onCreateView: started.");
         Log.d(TAG, "items initialized: " +items.toString());
+
+        getFromDatabase("default");
+
 
         /*
         toolbar = (Toolbar) view.findViewById(R.id.toolbar2);
@@ -241,7 +245,7 @@ public class Fragment4 extends Fragment {
         LabelOfImage.analyze(testImage, rotation, labelsResponse);
     }
 
-    private void getFromDatabase(String answer) {
+    private void getFromDatabase(String requiredImage) {
         /* Check login info */
         if (userId == null) {
             return;
@@ -253,6 +257,18 @@ public class Fragment4 extends Fragment {
                 .build();
         ImageService service = retrofit.create(ImageService.class);
 
+        service.downloadImage(userId, requiredImage).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
+                Log.d("ImageService", "res:" + response.body());
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
+                Log.d("ImageService", "Failed API call with call: " + call
+                        + ", exception:  " + t);
+            }
+        });
     }
 
     private void saveToDatabase(File image, String answer) {
