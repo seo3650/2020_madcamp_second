@@ -6,8 +6,6 @@ import android.content.Context;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -15,11 +13,10 @@ import android.view.Surface;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.camera.core.ImageAnalysis;
-import androidx.camera.core.ImageProxy;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
@@ -28,12 +25,12 @@ import com.google.firebase.ml.vision.label.FirebaseVisionImageLabeler;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.CAMERA_SERVICE;
-import static androidx.camera.core.CameraX.getContext;
+
+
 
 public class LabelOfImage {
 
@@ -91,37 +88,38 @@ public class LabelOfImage {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint({"UnsafeExperimentalUsageError", "RestrictedApi"})
-    public static ArrayList<String> analyze(@NotNull FirebaseVisionImage image, int rotation) {
+    public static void analyze(@NotNull FirebaseVisionImage image, int rotation, Fragment4.LabelsResponse labelsResponse) {
+        // TODO: using rotation
         /* Get image rotation */
         ArrayList<String> answer = new ArrayList<>();
-
         FirebaseVisionImageLabeler labeler = FirebaseVision.getInstance()
                 .getOnDeviceImageLabeler();
 
         labeler.processImage(image)
-            .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionImageLabel>>() {
-                @Override
-                public void onSuccess(List<FirebaseVisionImageLabel> labels) {
-                    for (FirebaseVisionImageLabel label: labels) {
-                        String text = label.getText();
-                        String entityId = label.getEntityId();
-                        float confidence = label.getConfidence();
-                        Log.d("LabelOfImage", "Success! "
-                                + "text: " + text
-                                + ", entityId: " + entityId
-                                + ", confidence: " + confidence);
-                        if (confidence > 0.5) {
-                            answer.add(text);
+                .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionImageLabel>>() {
+                    @Override
+                    public void onSuccess(List<FirebaseVisionImageLabel> labels) {
+                        ArrayList<String> answer = new ArrayList<>();
+                        for (FirebaseVisionImageLabel label: labels) {
+                            String text = label.getText();
+                            String entityId = label.getEntityId();
+                            float confidence = label.getConfidence();
+                            Log.d("LabelOfImage", "Success! "
+                                    + "text: " + text
+                                    + ", entityId: " + entityId
+                                    + ", confidence: " + confidence);
+                            if (confidence > 0.5) {
+                                answer.add(text);
+                            }
                         }
+                        labelsResponse.onResponseReceived(answer);
                     }
-                }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("LabelOfImage", "Fali: " + e.toString());
-                }
-            });
-        return answer;
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("LabelOfImage", "Fali: " + e.toString());
+                    }
+                });
     }
 }

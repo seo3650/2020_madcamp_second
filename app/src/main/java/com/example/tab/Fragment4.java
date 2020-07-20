@@ -3,7 +3,6 @@ package com.example.tab;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,11 +19,6 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
@@ -36,22 +30,31 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import  android.content.Intent;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import java.util.Objects;
 
 import static android.content.Context.CAMERA_SERVICE;
-import java.util.Objects;
 
-import static android.content.Context.CAMERA_SERVICE;
-import android.os.Build;
-import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
-import java.nio.file.Files;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.app.Activity.RESULT_OK;
 import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.example.tab.MainActivity.url;
+import static com.example.tab.MainActivity.userId;
 
 
 public class Fragment4 extends Fragment {
@@ -136,22 +139,30 @@ public class Fragment4 extends Fragment {
     }
 
 
+    interface LabelsResponse {
+        void onResponseReceived(ArrayList<String> res);
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CAMERA) {
             if (resultCode == RESULT_OK) {
-                getLabelOfImage();
+                getLabelOfImage(new LabelsResponse() {
+                    @Override
+                    public void onResponseReceived(ArrayList<String> res) {
+
+                    }
+                });
             }
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private ArrayList<String> getLabelOfImage() {
+    private void getLabelOfImage(LabelsResponse labelsResponse) {
 //        File testFile = new File("/storage/emulated/0/Download/322868_1100-800x825.jpg");
         if (pathToFile == null) {
-            return new ArrayList<String>();
+            return;
         }
         File testFile = new File(pathToFile);
         Uri uri = FileProvider.getUriForFile(getActivity(), "com.thecodecity.cameraandroid.fileprovider", testFile);
@@ -161,7 +172,7 @@ public class Fragment4 extends Fragment {
             testImage = FirebaseVisionImage.fromFilePath(Objects.requireNonNull(getContext()), uri);
         } catch (IOException e) {
             e.printStackTrace();
-            return new ArrayList<String>();
+            return;
         }
 
         /* Get rotation */
@@ -181,6 +192,54 @@ public class Fragment4 extends Fragment {
         } catch (CameraAccessException e) {
             rotation = 0;
         }
-        return LabelOfImage.analyze(testImage, rotation);
+        LabelOfImage.analyze(testImage, rotation, labelsResponse);
+    }
+
+    private void getFromDatabase(String answer) {
+        /* Check login info */
+        if (userId == null) {
+            return;
+        }
+        /* Init retrofit */
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(String.valueOf(url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ImageService service = retrofit.create(ImageService.class);
+
+    }
+
+    private void saveToDatabase(File image, String answer) {
+        /* Check login info */
+        if (userId == null) {
+            return;
+        }
+        /* Init retrofit */
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(String.valueOf(url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ImageService service = retrofit.create(ImageService.class);
+
+
+        int pos = image.toString().lastIndexOf( "." );
+        String ext = image.toString().substring( pos + 1 );
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/" + ext), image);
+        // MultipartBody.Part is used to send also the actual filename
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", image.getName(), requestFile);
+
+        /* Send image to server */
+        service.uploadImage(userId, answer, body).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
+                Log.d("ImageService", "res:" + response);
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<ResponseBody> call, @NotNull Throwable t) {
+                Log.d("ImageService", "Failed API call with call: " + call
+                        + ", exception:  " + t);
+            }
+        });
     }
 }
