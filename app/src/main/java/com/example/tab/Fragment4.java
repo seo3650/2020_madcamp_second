@@ -192,7 +192,7 @@ public class Fragment4 extends Fragment {
         void onResponseReceived(Bitmap res);
     }
     interface DatabaseResponse {
-        void onResponseReceived();
+        void onResponseReceived(String item);
     }
 
     @Override
@@ -221,7 +221,7 @@ public class Fragment4 extends Fragment {
                             for (int i = 0; i < matches.size(); i++){
                                 saveToDatabase(file, matches.get(i), new DatabaseResponse() {
                                     @Override
-                                    public void onResponseReceived() {
+                                    public void onResponseReceived(String item) {
                                         /* Success message */
                                         konfettiView.build()
                                                 .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
@@ -237,7 +237,7 @@ public class Fragment4 extends Fragment {
                                         pDialog.dismissWithAnimation();
                                         new SweetAlertDialog(Objects.requireNonNull(getContext()), SweetAlertDialog.SUCCESS_TYPE)
                                                 .setTitleText("Success!")
-                                                .setContentText("Good job:)")
+                                                .setContentText("You found "+ item.toLowerCase() + ". " + "Good job:)")
                                                 .setConfirmText("Okay")
                                                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                                     @Override
@@ -402,7 +402,7 @@ public class Fragment4 extends Fragment {
             @Override
             public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
                 Log.d("ImageService", "res:" + response);
-                databaseResponse.onResponseReceived();
+                databaseResponse.onResponseReceived(answer);
             }
 
             @Override
