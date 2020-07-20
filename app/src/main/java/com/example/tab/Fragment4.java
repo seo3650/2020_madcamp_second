@@ -1,60 +1,40 @@
 package com.example.tab;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import  android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import java.util.Objects;
+
+import static android.content.Context.CAMERA_SERVICE;
 import android.os.Build;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -85,10 +65,6 @@ public class Fragment4 extends Fragment {
     private String mAppend = "file:/";
     private String pathToFile;
 
-    //facebook
-    private CallbackManager callbackManager;
-    private LoginButton loginButton;
-
 
     //pokemon
     Toolbar toolbar;
@@ -98,6 +74,12 @@ public class Fragment4 extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        try {
+            getLabelOfImage(null);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
 
         View view = inflater.inflate(R.layout.fragment4_layout, container, false);
 
@@ -171,13 +153,41 @@ public class Fragment4 extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    private ArrayList<String> getLabelOfImage(Image image) throws CameraAccessException {
+        File testFile = new File("/storage/emulated/0/Download/322868_1100-800x825.jpg");
+        Uri uri = FileProvider.getUriForFile(getActivity(), "com.thecodecity.cameraandroid.fileprovider", testFile);
+
+        /* Get image */
+        FirebaseVisionImage testImage;
+        try {
+            testImage = FirebaseVisionImage.fromFilePath(Objects.requireNonNull(getContext()), uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        /* Get rotation */
+        String cameraId = null;
+        int rotation;
+        try {
+            CameraManager cameraManager = (CameraManager) getContext().getSystemService(CAMERA_SERVICE);
+            String[] cameraIds = cameraManager.getCameraIdList();
+            for (String candidateId: cameraIds) {
+                CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(candidateId);
+                Integer camerInfo = characteristics.get(CameraCharacteristics.LENS_FACING);
+                if (camerInfo != null && camerInfo == CameraCharacteristics.LENS_FACING_BACK) {
+                    cameraId = candidateId;
+                }
+            }
+            rotation = LabelOfImage.getRotationCompensation(cameraId, getActivity(), getContext());
+        } catch (CameraAccessException e) {
+            rotation = 0;
+        }
 
 
-
+        return LabelOfImage.analyze(testImage, rotation);
     }
-
+}
