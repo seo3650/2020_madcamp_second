@@ -28,6 +28,7 @@ public interface ImageService {
     @GET("/image/download")
     Call<ResponseBody> downloadImage(
             @Header("userId") String userId,
-            @Query("kind") String imageKind
+            @Header("imageKind") String imageKind,
+            @Query("name") String imageName
     );
 }
