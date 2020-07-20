@@ -15,5 +15,17 @@
 
     </androidx.fragment.app.FragmentContainerView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnLaunchCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="#606161"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/gridView"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

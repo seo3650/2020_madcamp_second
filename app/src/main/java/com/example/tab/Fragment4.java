@@ -6,6 +6,8 @@ import android.hardware.camera2.CameraManager;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +27,12 @@ import androidx.core.content.ContextCompat;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import  android.content.Intent;
@@ -55,6 +60,7 @@ public class Fragment4 extends Fragment {
 
     //constants
     private static final int NUM_GRID_COLUMNS = 3;
+    private final int REQUEST_CAMERA = 1;
 
     //widgets
     private GridView gridView;
@@ -78,13 +84,6 @@ public class Fragment4 extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        try {
-            getLabelOfImage(null);
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-
         View view = inflater.inflate(R.layout.fragment4_layout, container, false);
 
         Log.d(TAG, "onCreateView: started.");
@@ -96,58 +95,42 @@ public class Fragment4 extends Fragment {
         setSupportActionBar(toolbar);
 
          */
-
-
-
-
-        /*
-        callbackManager = CallbackManager.Factory.create();
-
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // App code
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        // App code
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        // App code
-                    }
-                });
-
-
-
-        loginButton = (LoginButton) view.findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
-        // If using in a fragment
-        loginButton.setFragment(this);
-
-        // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        /* Prepare camer button */
+        FloatingActionButton btnLaunchCamera = view.findViewById(R.id.btnLaunchCamera);
+        btnLaunchCamera.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-                // App code
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: launching camera.");
+                dispatchPictureTakerAction();
             }
 
-            @Override
-            public void onCancel() {
-                // App code
+            private void dispatchPictureTakerAction(){
+                Intent takePic = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                File photoFile = null;
+
+                photoFile = createPhotoFile();
+                if (photoFile != null) {
+                    pathToFile = photoFile.getAbsolutePath();
+                    Uri photoURI = FileProvider.getUriForFile(getActivity(), "com.thecodecity.cameraandroid.fileprovider", photoFile);
+                    takePic.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePic, REQUEST_CAMERA);
+                }
             }
 
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
+            private File createPhotoFile(){
+                String name = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                //File appStorageDir = Context.getFilesDir();
+                File image = null;
+                try {
+                    image = File.createTempFile(name, ".jpg", storageDir);
+                } catch (IOException e) {
+                    Log.d(TAG, "Excep : " +e.toString());
+                }
+                return image;
             }
+
         });
-
-         */
-
 
         return view;
     }
@@ -157,25 +140,33 @@ public class Fragment4 extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CAMERA) {
+            if (resultCode == RESULT_OK) {
+                getLabelOfImage();
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private ArrayList<String> getLabelOfImage(Image image) throws CameraAccessException {
-        File testFile = new File("/storage/emulated/0/Download/322868_1100-800x825.jpg");
+    private ArrayList<String> getLabelOfImage() {
+//        File testFile = new File("/storage/emulated/0/Download/322868_1100-800x825.jpg");
+        if (pathToFile == null) {
+            return new ArrayList<String>();
+        }
+        File testFile = new File(pathToFile);
         Uri uri = FileProvider.getUriForFile(getActivity(), "com.thecodecity.cameraandroid.fileprovider", testFile);
-
         /* Get image */
         FirebaseVisionImage testImage;
         try {
             testImage = FirebaseVisionImage.fromFilePath(Objects.requireNonNull(getContext()), uri);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return new ArrayList<String>();
         }
 
         /* Get rotation */
         String cameraId = null;
-        int rotation;
+        int rotation = 0;
         try {
             CameraManager cameraManager = (CameraManager) getContext().getSystemService(CAMERA_SERVICE);
             String[] cameraIds = cameraManager.getCameraIdList();
@@ -190,8 +181,6 @@ public class Fragment4 extends Fragment {
         } catch (CameraAccessException e) {
             rotation = 0;
         }
-
-
         return LabelOfImage.analyze(testImage, rotation);
     }
 }

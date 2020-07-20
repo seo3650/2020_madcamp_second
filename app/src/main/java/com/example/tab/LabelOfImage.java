@@ -91,7 +91,6 @@ public class LabelOfImage {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint({"UnsafeExperimentalUsageError", "RestrictedApi"})
-//    @Override
     public static ArrayList<String> analyze(@NotNull FirebaseVisionImage image, int rotation) {
         /* Get image rotation */
         ArrayList<String> answer = new ArrayList<>();
@@ -111,7 +110,7 @@ public class LabelOfImage {
                                 + "text: " + text
                                 + ", entityId: " + entityId
                                 + ", confidence: " + confidence);
-                        if (confidence > 0.8) {
+                        if (confidence > 0.5) {
                             answer.add(text);
                         }
                     }
