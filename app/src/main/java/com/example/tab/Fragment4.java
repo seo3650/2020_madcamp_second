@@ -175,6 +175,9 @@ public class Fragment4 extends Fragment {
     public interface ImageResponse {
         void onResponseReceived(Bitmap res);
     }
+    interface DatabaseResponse {
+        void onResponseReceived();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -193,14 +196,15 @@ public class Fragment4 extends Fragment {
                         if (pair.first != null) {
                             File file = new File(path);
                             for (int i = 0; i < matches.size(); i++){
-                                saveToDatabase(file, matches.get(i) );
+                                saveToDatabase(file, matches.get(i), new DatabaseResponse() {
+                                    @Override
+                                    public void onResponseReceived() {
+                                        FragmentTransaction tr = getFragmentManager().beginTransaction();
+                                        tr.replace(R.id.fragment4_layout, new Fragment4() );
+                                        tr.commit();
+                                    }
+                                });
                                 Log.d(TAG, "uploaded image with label " + matches.get(i));
-                                //fetchData(items);
-
-                                FragmentTransaction tr = getFragmentManager().beginTransaction();
-                                tr.replace(R.id.fragment4_layout, new Fragment4() );
-                                tr.commit();
-
                             }
 
 
@@ -320,7 +324,7 @@ public class Fragment4 extends Fragment {
         });
     }
 
-    private void saveToDatabase(File image, String answer) {
+    private void saveToDatabase(File image, String answer, DatabaseResponse databaseResponse) {
         /* Check login info */
         if (userId == null) {
             return;
@@ -344,6 +348,7 @@ public class Fragment4 extends Fragment {
             @Override
             public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
                 Log.d("ImageService", "res:" + response);
+                databaseResponse.onResponseReceived();
             }
 
             @Override
