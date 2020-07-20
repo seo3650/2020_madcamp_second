@@ -103,7 +103,7 @@ public class Fragment2 extends Fragment {
     private ShareButton shareButton;
 
 
-    private String url = "http://192.249.19.244:2280/";
+    private final String url = "http://192.249.19.244:2280/";
 
 
 
@@ -484,7 +484,7 @@ public class Fragment2 extends Fragment {
                 MultipartBody.Part body = MultipartBody.Part.createFormData("image", image.getName(), requestFile);
 
                 /* Send image to server */
-                service.uploadImage(userId, body).enqueue(new Callback<ResponseBody>() {
+                service.uploadImage(userId, "default", body).enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(@NotNull Call<ResponseBody> call, @NotNull Response<ResponseBody> response) {
                         Log.d("ImageService", "res:" + response);
