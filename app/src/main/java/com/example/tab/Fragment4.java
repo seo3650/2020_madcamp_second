@@ -309,7 +309,7 @@ public class Fragment4 extends Fragment {
         String ext = image.toString().substring( pos + 1 );
         RequestBody requestFile = RequestBody.create(MediaType.parse("image/" + ext), image);
         // MultipartBody.Part is used to send also the actual filename
-        MultipartBody.Part body = MultipartBody.Part.createFormData("image", answer, requestFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", answer + ".jpg", requestFile);
 
         /* Send image to server */
         service.uploadImage(userId, "dogam", body).enqueue(new Callback<ResponseBody>() {
