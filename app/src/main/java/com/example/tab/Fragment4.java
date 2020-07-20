@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,12 +33,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import  android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+
+import java.util.Arrays;
 import java.util.Objects;
 
 import static android.content.Context.CAMERA_SERVICE;
@@ -55,12 +59,14 @@ import static android.os.Environment.getExternalStoragePublicDirectory;
 
 
 public class Fragment4 extends Fragment {
-    private static final String TAG = "FacebookFragment";
+    private static final String TAG = "DogamFragment";
 
 
     //constants
     private static final int NUM_GRID_COLUMNS = 3;
     private final int REQUEST_CAMERA = 1;
+    private static ArrayList<String> items;
+
 
     //widgets
     private GridView gridView;
@@ -85,9 +91,10 @@ public class Fragment4 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment4_layout, container, false);
+        items = new ArrayList<>(Arrays.asList("Computer", "Phone", "Clock", "Chair"));
 
         Log.d(TAG, "onCreateView: started.");
-
+        Log.d(TAG, "items initialized: " +items.toString());
 
         /*
         toolbar = (Toolbar) view.findViewById(R.id.toolbar2);
@@ -107,6 +114,8 @@ public class Fragment4 extends Fragment {
             private void dispatchPictureTakerAction(){
                 Intent takePic = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 File photoFile = null;
+
+                //fix later
 
                 photoFile = createPhotoFile();
                 if (photoFile != null) {
@@ -142,10 +151,49 @@ public class Fragment4 extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CAMERA) {
             if (resultCode == RESULT_OK) {
-                getLabelOfImage();
+
+
+                ArrayList<String> labels = getLabelOfImage();
+                Log.d(TAG, "onActivityResult: labels = " + labels.toString());
+                matchLabels(pathToFile, labels);
+            } else {
+                // delete empty .jpg file.
+
             }
         }
     }
+
+
+    private Pair<String, ArrayList<String>> matchLabels(String pathToFile, ArrayList<String> labels) {
+
+        Log.d(TAG, "matchLabels: started with labels " + labels.toString());
+        ArrayList<String> matches = new ArrayList();
+
+        for ( int i = 0; i < labels.size(); i ++) {
+            for (int j = 0; j < items.size(); j++) {
+                if (items.get(j).toLowerCase().contains(labels.get(i).toLowerCase())) {
+                    matches.add(items.get(j));
+                }
+            }
+
+        }
+        Pair<String, ArrayList<String>> pair;
+        if (matches.size() == 0){
+            pair = new Pair<>(null, matches);
+        } else {
+            pair = new Pair<>(pathToFile, matches);
+
+        }
+
+        Log.d(TAG, "matchLabels: pair " + pair.toString());
+        return pair;
+
+
+
+
+    }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private ArrayList<String> getLabelOfImage() {
@@ -181,6 +229,17 @@ public class Fragment4 extends Fragment {
         } catch (CameraAccessException e) {
             rotation = 0;
         }
+
+        matchLabels(pathToFile, LabelOfImage.analyze(testImage, rotation)  );
+
         return LabelOfImage.analyze(testImage, rotation);
     }
+
+
+
+
+
+
+
+
 }
