@@ -36,6 +36,8 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
         return new MyViewHolder(itemView);
     }
 
+
+    // Image and item name set here
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
