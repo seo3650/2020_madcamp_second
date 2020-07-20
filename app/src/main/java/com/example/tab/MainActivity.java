@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView myMessage;
     private Context mContext = MainActivity.this;
     public static String userId = null;
-    private String url = "http://192.249.19.244:2280/";
+    public static final String url = "http://192.249.19.244:2280/";
     private int REQUEST_LOGIN = 2;
 
     /* DB info */
