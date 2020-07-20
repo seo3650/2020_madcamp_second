@@ -69,7 +69,9 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
             @Override
             public void onResponseReceived(Bitmap res) {
                 if (res == null) {
-                    Log.d("ImageService", "Download Failed");
+                    Log.d("ImageService", "Download Failed. Loading default image.");
+                    Glide.with(context).load(getDrawable(pokemonList.get(position))  ).into(holder.pokemon_image);
+
 
                     return;
                 }
@@ -89,6 +91,24 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
         //Set name
 
     }
+
+    private int getDrawable(String item){
+        switch (item) {
+            case "Computer":
+                return R.drawable.computer_silhouette;
+            case "Mobile Phone":
+                return R.drawable.phone_silhouette;
+            case "Chair":
+                return R.drawable.chair_silhouette;
+            case "Clock":
+                return R.drawable.clock_silhouette;
+            default:
+                return -1;
+        }
+
+
+    }
+
 
     @Override
     public int getItemCount() {
