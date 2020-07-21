@@ -153,35 +153,56 @@ public class PokemonList extends Fragment {
 
                                     /* Facebook share */
                                     /* Get certificate */
-                                    Bitmap bitmap = BitmapFactory.decodeResource(
+                                    Bitmap diplomaBitmap = BitmapFactory.decodeResource(
                                             getContext().getResources(), R.drawable.diploma);
-                                    /* Get player name */
+
                                     getUserName(new FacebookResponse() {
                                         @Override
                                         public void onResponseReceived(String res) {
+                                            /* Get player name */
                                             String name = res.split("\"")[3];
 
+                                            int nameWidth = 2000;
+                                            int nameHeight = 300;
                                             Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-                                            Bitmap originalBitmap = Bitmap.createBitmap(100, 100, conf);
+                                            Bitmap originalBitmap = Bitmap.createBitmap(nameWidth, nameHeight, conf);
                                             Canvas canvas = new Canvas(originalBitmap);
                                             Paint paint = new Paint();
-                                            paint.setTextSize(30);
-                                            Bitmap toDisk = Bitmap.createBitmap(100, 100,Bitmap.Config.ARGB_8888);
-                                            canvas.setBitmap(toDisk);
-                                            canvas.drawText(name, 50 , 50, paint);
+                                            paint.setTextSize(100);
+                                            Bitmap nameBitmap = Bitmap.createBitmap(nameWidth, nameHeight,Bitmap.Config.ARGB_8888);
+                                            canvas.setBitmap(nameBitmap);
+                                            canvas.drawText(name, 0 , 150, paint);
 
+                                            /* Merge with two bitmap */
+                                            Bitmap cs = null;
+
+                                            int width = diplomaBitmap.getWidth();
+                                            int height = diplomaBitmap.getHeight();
+
+//                                            if(nameBitmap.getWidth() > diplomaBitmap.getWidth()) {
+//                                                width = nameBitmap.getWidth() + diplomaBitmap.getWidth();
+//                                                height = nameBitmap.getHeight();
+//                                            } else {
+//                                                width = diplomaBitmap.getWidth() + diplomaBitmap.getWidth();
+//                                                height = diplomaBitmap.getHeight();
+//                                            }
+                                            cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+                                            Canvas comboImage = new Canvas(cs);
+
+                                            comboImage.drawBitmap(diplomaBitmap, 0f, 0f, null);
+                                            comboImage.drawBitmap(nameBitmap, 950f, 670f, null);
+
+                                            /* Share on Facebook */
+                                            SharePhoto photo = new SharePhoto.Builder()
+                                                    .setBitmap(cs)
+                                                    .build();
+                                            SharePhotoContent content = new SharePhotoContent.Builder()
+                                                    .addPhoto(photo)
+                                                    .build();
+                                            shareButton.setShareContent(content);
                                         }
                                     });
-
-                                    /* Merge with two bitmap */
-
-                                    SharePhoto photo = new SharePhoto.Builder()
-                                            .setBitmap(bitmap)
-                                            .build();
-                                    SharePhotoContent content = new SharePhotoContent.Builder()
-                                            .addPhoto(photo)
-                                            .build();
-                                    shareButton.setShareContent(content);
                                 }
                             })
                             .show();
