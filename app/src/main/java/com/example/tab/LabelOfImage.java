@@ -3,6 +3,7 @@ package com.example.tab;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -88,7 +89,8 @@ public class LabelOfImage {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint({"UnsafeExperimentalUsageError", "RestrictedApi"})
-    public static void analyze(@NotNull FirebaseVisionImage image, int rotation, Fragment4.LabelsResponse labelsResponse) {
+    public static void analyze(@NotNull FirebaseVisionImage image, int rotation,
+                               Fragment4.LabelsResponse labelsResponse) {
         // TODO: using rotation
         /* Get image rotation */
         ArrayList<String> answer = new ArrayList<>();

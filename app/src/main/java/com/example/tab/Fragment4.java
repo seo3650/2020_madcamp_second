@@ -35,7 +35,9 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -361,6 +363,23 @@ public class Fragment4 extends Fragment {
         Bitmap bitmap = BitmapFactory.decodeFile(testFile.toString());
         Bitmap rotatedBitmap = rotateImage(bitmap, rotation);
         testImage = FirebaseVisionImage.fromBitmap(rotatedBitmap);
+
+        /* Save image to pathToFile */
+        OutputStream out = null;
+        try {
+            File file = new File(pathToFile);
+            out = new FileOutputStream(file);
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         LabelOfImage.analyze(testImage, rotation, labelsResponse);
     }
