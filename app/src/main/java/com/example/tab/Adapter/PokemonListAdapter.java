@@ -23,6 +23,7 @@ import com.example.tab.R;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.example.tab.Fragment4.getFromDatabase;
@@ -33,21 +34,21 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
 
     Context context;
     List<String> pokemonList;
-    private int foundItems;
+//    private int foundItems;
+    private HashSet<String> foundItems;
     private PokemonList.PokemonResponse pokemonResponse;
 
 
     public PokemonListAdapter(Context context, List<String> pokemonList,  PokemonList.PokemonResponse pokemonResponse) {
         this.context = context;
         this.pokemonList = pokemonList;
-        this.foundItems = 0;
+        this.foundItems = new HashSet<>();
         this.pokemonResponse = pokemonResponse;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        this.foundItems = 0;
         View itemView = LayoutInflater.from(context).inflate(R.layout.pokemon_list_item,parent, false );
 
         return new MyViewHolder(itemView);
@@ -68,7 +69,7 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
                     Glide.with(context).load(getDrawable(pokemonList.get(position))  ).into(holder.pokemon_image);
                     return;
                 }
-                foundItems += 1;
+                foundItems.add(pokemonList.get(position));
                 Log.d("ImageService", "Download Success");
 
                 Glide.with(context).load(res).into(holder.pokemon_image);

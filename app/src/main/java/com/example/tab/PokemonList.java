@@ -24,6 +24,7 @@ import com.example.tab.Retrofit.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -111,15 +112,15 @@ public class PokemonList extends Fragment {
          */
         PokemonListAdapter adapter = new PokemonListAdapter(getActivity(), items, new PokemonResponse() {
             @Override
-            public void onResponseReceived(int foundItems) {
+            public void onResponseReceived(HashSet<String> foundItems) {
                 progressBar.setProgress(0);
-                progressBar.setProgress(foundItems);
+                progressBar.setProgress(foundItems.size());
             }
         });
         pokemon_list_recyclerview.setAdapter(adapter);
     }
 
     public interface PokemonResponse {
-        void onResponseReceived(int foundItems);
+        void onResponseReceived(HashSet<String> foundItems);
     }
 }
