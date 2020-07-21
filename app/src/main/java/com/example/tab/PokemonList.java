@@ -2,6 +2,8 @@ package com.example.tab;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -159,6 +161,14 @@ public class PokemonList extends Fragment {
                                         public void onResponseReceived(String res) {
                                             String name = res.split("\"")[3];
 
+                                            Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+                                            Bitmap originalBitmap = Bitmap.createBitmap(100, 100, conf);
+                                            Canvas canvas = new Canvas(originalBitmap);
+                                            Paint paint = new Paint();
+                                            paint.setTextSize(30);
+                                            Bitmap toDisk = Bitmap.createBitmap(100, 100,Bitmap.Config.ARGB_8888);
+                                            canvas.setBitmap(toDisk);
+                                            canvas.drawText(name, 50 , 50, paint);
 
                                         }
                                     });
