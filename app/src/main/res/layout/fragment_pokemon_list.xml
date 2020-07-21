@@ -18,7 +18,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pokemon_list_recyclerview"
             android:layout_width="wrap_content"
-            android:layout_height="510dp"
+            android:layout_height="450dp"
             android:layout_gravity="center_horizontal" />
 
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar

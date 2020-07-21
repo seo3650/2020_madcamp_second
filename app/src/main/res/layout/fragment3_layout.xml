@@ -15,7 +15,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="68dp"
         android:text="No.1 Decision Maker"
-        android:textSize="30sp"
+        android:textColor="#FFFFFF"
+        android:textSize="25sp"
+        android:typeface="monospace"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

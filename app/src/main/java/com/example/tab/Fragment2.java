@@ -287,8 +287,8 @@ public class Fragment2 extends Fragment {
         directories.add(filePaths.CAMERA);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, directories);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.layout.spinner_item, directories);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         directorySpinner.setAdapter(adapter);
 
         directorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -335,15 +335,16 @@ public class Fragment2 extends Fragment {
         if (imgURLs.size() > 0 ){
             setImage(imgURLs.get(0), galleryImage, mAppend);
             setShareButton(imgURLs.get(0));
-            pathToFile = null;
+
 
 
 
 
         } else {
             Log.d(TAG, "empty directory. Share button disabled.");
-            galleryImage.setImageResource( R.drawable.won_heads );
+            galleryImage.setImageResource( R.drawable.empty );
             setShareButton(null);
+            pathToFile = "";
 
 
         }
