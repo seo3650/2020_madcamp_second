@@ -36,6 +36,18 @@
             app:rcReverse="false" />
     </LinearLayout>
 
+    <com.facebook.share.widget.ShareButton
+        android:visibility="gone"
+        android:id="@+id/fb_share_button_at_dogam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="224dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.952"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 
 </FrameLayout>
