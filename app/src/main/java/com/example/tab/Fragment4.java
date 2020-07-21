@@ -116,7 +116,12 @@ public class Fragment4 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment4_layout, container, false);
-        items = new ArrayList<>(Arrays.asList("Computer", "Mobile Phone", "Clock", "Chair", "Glasses"));
+        items = new ArrayList<>(Arrays.asList(
+                "Computer", "Mobile Phone",
+                "Clock", "Chair", "Vehicle",
+                "Umbrella", "Stairs", "Sky",
+                "Plant", "Pattern", "Car", "Asphalt",
+                "Building"));
         konfettiView = view.findViewById(R.id.konfettiView);
         konfettiView.bringToFront();
         konfettiView.setElevation(3000);
@@ -224,51 +229,50 @@ public class Fragment4 extends Fragment {
                     public void onResponseReceived(ArrayList<String> res) {
                         ArrayList<String> labels = res;
                         Log.d(TAG, "onActivityResult: labels = " + labels.toString());
+                        Pair<String, String> pair = matchLabels(pathToFile, labels);
                         Toast.makeText(getActivity(), labels.toString(), Toast.LENGTH_LONG).show();
-                        Pair<String, ArrayList<String>> pair = matchLabels(pathToFile, labels);
                         String path = pair.first;
-                        ArrayList<String> matches = pair.second;
+                        String match = pair.second;
 
                         if (pair.first != null) {
                             File file = new File(path);
-                            for (int i = 0; i < matches.size(); i++){
-                                saveToDatabase(file, matches.get(i), new DatabaseResponse() {
-                                    @Override
-                                    public void onResponseReceived(String item) {
-                                        /* Success message */
-                                        konfettiView.build()
-                                                .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                                                .setDirection(0.0, 359.0)
-                                                .setSpeed(1f, 5f)
-                                                .setFadeOutEnabled(true)
-                                                .setTimeToLive(2000L)
-                                                .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
-                                                .addSizes(new Size(12, 5f))
-                                                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
-                                                .streamFor(300, 5000L);
+                            saveToDatabase(file, match, new DatabaseResponse() {
+                                @Override
+                                public void onResponseReceived(String item) {
+                                    /* Success message */
+                                    konfettiView.build()
+                                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                                            .setDirection(0.0, 359.0)
+                                            .setSpeed(1f, 5f)
+                                            .setFadeOutEnabled(true)
+                                            .setTimeToLive(2000L)
+                                            .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+                                            .addSizes(new Size(12, 5f))
+                                            .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                                            .streamFor(300, 5000L);
 
-                                        pDialog.dismissWithAnimation();
-                                        new SweetAlertDialog(Objects.requireNonNull(getContext()), SweetAlertDialog.SUCCESS_TYPE)
-                                                .setTitleText("Success!")
-                                                .setContentText("You found "+ item.toLowerCase() + ". " + "Good job:)")
-                                                .setConfirmText("Okay")
-                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                    @Override
-                                                    public void onClick(SweetAlertDialog sDialog) {
-                                                        sDialog.dismissWithAnimation();
-                                                    }
-                                                })
-                                                .show();
+                                    pDialog.dismissWithAnimation();
+                                    new SweetAlertDialog(Objects.requireNonNull(getContext()), SweetAlertDialog.SUCCESS_TYPE)
+                                            .setTitleText("Success!")
+                                            .setContentText("You found "+ item.toLowerCase() + ". " + "Good job:)")
+                                            .setConfirmText("Okay")
+                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sDialog) {
+                                                    sDialog.dismissWithAnimation();
+                                                }
+                                            })
+                                            .show();
 
-                                        foundItems += 1;
+                                    foundItems += 1;
 //                                        progressBar.setProgress(foundItems);
-                                        FragmentTransaction tr = getFragmentManager().beginTransaction();
-                                        tr.replace(R.id.fragment4_layout, new Fragment4() );
-                                        tr.commit();
-                                    }
-                                });
-                                Log.d(TAG, "uploaded image with label " + matches.get(i));
-                            }
+                                    FragmentTransaction tr = getFragmentManager().beginTransaction();
+                                    tr.replace(R.id.fragment4_layout, new Fragment4() );
+                                    tr.commit();
+                                }
+                            });
+                            Log.d(TAG, "uploaded image with label " + match);
+
                         } else {
                             /* Fail message */
                             pDialog.dismissWithAnimation();
@@ -306,7 +310,7 @@ public class Fragment4 extends Fragment {
     }
 
     // matches dogam labels with firebase image labels.
-    private Pair<String, ArrayList<String>> matchLabels(String pathToFile, ArrayList<String> labels) {
+    private Pair<String, String> matchLabels(String pathToFile, ArrayList<String> labels) {
 
         Log.d(TAG, "matchLabels: started with labels " + labels.toString());
         ArrayList<String> matches = new ArrayList();
@@ -315,15 +319,16 @@ public class Fragment4 extends Fragment {
             for (int j = 0; j < items.size(); j++) {
                 if (items.get(j).toLowerCase().contains(labels.get(i).toLowerCase())) {
                     matches.add(items.get(j));
+                    break;
                 }
             }
 
         }
-        Pair<String, ArrayList<String>> pair;
+        Pair<String, String> pair;
         if (matches.size() == 0){
-            pair = new Pair<>(null, matches);
+            pair = new Pair<>(null, matches.get(0));
         } else {
-            pair = new Pair<>(pathToFile, matches);
+            pair = new Pair<>(pathToFile, matches.get(0));
 
         }
 

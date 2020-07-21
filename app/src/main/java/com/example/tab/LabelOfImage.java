@@ -110,7 +110,7 @@ public class LabelOfImage {
                                     + "text: " + text
                                     + ", entityId: " + entityId
                                     + ", confidence: " + confidence);
-                            if (confidence > 0.5) {
+                            if (confidence > 0.75) {
                                 answer.add(text);
                             }
                         }
