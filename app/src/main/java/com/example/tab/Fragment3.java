@@ -1,5 +1,6 @@
 package com.example.tab;
 
+import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +32,17 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
 public class Fragment3 extends Fragment {
+
+    private LoginButton loginButton;
+    private CallbackManager callbackManager;
 
     public static final Random RANDOM = new Random();
     private ImageView coinImageView;
@@ -48,6 +59,7 @@ public class Fragment3 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment3_layout, container, false);
+
 
         image1 = (ImageView) view.findViewById(R.id.ImageView01);
         image2 = (ImageView) view.findViewById(R.id.ImageView02);
