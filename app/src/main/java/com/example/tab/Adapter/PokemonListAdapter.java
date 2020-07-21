@@ -28,6 +28,7 @@ import java.util.List;
 
 import static com.example.tab.Fragment4.getFromDatabase;
 import com.example.tab.Fragment4.ImageResponse;
+import com.wajahatkarim3.easyflipview.EasyFlipView;
 
 
 public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.MyViewHolder> {
@@ -61,14 +62,46 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
 
         holder.pokemon_name.setText(pokemonList.get(position));
 
-        if (pokemonList.get(position) == "Computer") {
-            holder.pokemon_back_content.setText("Computer content");
-        } else if (pokemonList.get(position) == "Mobild Phone") {
-
-        } else if (pokemonList.get(position) == "Clock") {
-
-        } else if (pokemonList.get(position) == "Chair") {
-            
+        switch (pokemonList.get(position)) {
+            case "Computer":
+                holder.pokemon_back_content.setText("Computer\n\n실습실에서 볼 수 있는 듀얼스크린 컴퓨터");
+                break;
+            case "Mobile Phone":
+                holder.pokemon_back_content.setText("Computer\n\nGithub 알람이 와있다.");
+                break;
+            case "Clock":
+                holder.pokemon_back_content.setText("Clock\n\n정작 볼일이 별로 없는 벽시계");
+                break;
+            case "Chair":
+                holder.pokemon_back_content.setText("Chair\n\n프로그래머의 온기가 남아있다.");
+                break;
+            case "Vehicle":
+                holder.pokemon_back_content.setText("Vehicle\n\n카이스트에서 가장 흔히 볼 수 있는 탈것.");
+                break;
+            case "Umbrella":
+                holder.pokemon_back_content.setText("Umbrella\n\n장마철 필수템");
+                break;
+            case "Stairs":
+                holder.pokemon_back_content.setText("Stairs\n\n계단이다. 특별히 눈에 띄는 점은 없다.");
+                break;
+            case "Sky":
+                holder.pokemon_back_content.setText("Sky\n\n실습실에선 보기 힘든 하늘");
+                break;
+            case "Plant":
+                holder.pokemon_back_content.setText("Plant\n\n비싸 보인다.");
+                break;
+            case "Pattern":
+                holder.pokemon_back_content.setText("Pattern\n\n어케 찾았을까?");
+                break;
+            case "Car":
+                holder.pokemon_back_content.setText("Car\n\nN1 출근 필수템");
+                break;
+            case "Asphalt":
+                holder.pokemon_back_content.setText("Asphalt\n\n차도에 많이 깔려 있다.");
+                break;
+            case "Building":
+                holder.pokemon_back_content.setText("Building\n\n직장인의 위시리스트 NO.1 아이템");
+                break;
         }
 
         getFromDatabase(  pokemonList.get(position)  ,new ImageResponse() {
@@ -76,13 +109,14 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
             public void onResponseReceived(Bitmap res) {
                 Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
                 Bitmap bmp = Bitmap.createBitmap(100, 100, conf);
-                Glide.with(context).load(bmp).into(holder.pokemon_back_image);
+//                Glide.with(context).load(bmp).into(holder.pokemon_back_image);
                 if (res == null) {
                     Log.d("ImageService", "Download Failed. Loading default image.");
                     Glide.with(context).load(getDrawable(pokemonList.get(position))  ).into(holder.pokemon_image);
                     return;
                 }
                 foundItems.add(pokemonList.get(position));
+                holder.pokemon_card.setFlipEnabled(true);
                 Log.d("ImageService", "Download Success");
 
                 Glide.with(context).load(res).into(holder.pokemon_image);
@@ -128,16 +162,17 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
     public class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView pokemon_image;
         TextView pokemon_name;
-        ImageView pokemon_back_image;
         TextView pokemon_back_content;
+        EasyFlipView pokemon_card;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
             pokemon_image = (ImageView) itemView.findViewById(R.id.pokemon_image);
             pokemon_name = (TextView) itemView.findViewById(R.id.txt_pokemon_name);
-            pokemon_back_image = (ImageView) itemView.findViewById(R.id.pokemon_back_image);
             pokemon_back_content = (TextView) itemView.findViewById(R.id.txt_pokemon_back);
+            pokemon_card = (EasyFlipView) itemView.findViewById(R.id.pokemon_card);
+            pokemon_card.setFlipEnabled(false);
         }
 
     }

@@ -20,6 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.wajahatkarim3.easyflipview.EasyFlipView
+            android:id="@+id/pokemon_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:flipOnTouch="true"
@@ -37,24 +38,16 @@
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
                 android:padding="4dp">
-                <!-- may need modifications -->
-                <ImageView
-                    android:id="@+id/pokemon_back_image"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_launcher_background"
-                    />
                 <TextView
                     android:id="@+id/txt_pokemon_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_width="150dp"
+                    android:layout_height="175dp"
+                    android:layout_gravity="center"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:fontFamily="monospace"
                     android:text="Bulbasar"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:typeface="monospace" />
             </LinearLayout>
