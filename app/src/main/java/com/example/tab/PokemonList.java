@@ -75,6 +75,8 @@ public class PokemonList extends Fragment {
         progressBar = view.findViewById(R.id.progress_bar);
         progressBar.setProgress(0);
         progressBar.setMax(items.size());
+        progressBar.bringToFront();
+        progressBar.setElevation(3000);
         return view;
     }
 

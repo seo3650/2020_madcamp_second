@@ -125,9 +125,6 @@ public class Fragment4 extends Fragment {
         konfettiView = view.findViewById(R.id.konfettiView);
         konfettiView.bringToFront();
         konfettiView.setElevation(3000);
-//        progressBar = view.findViewById(R.id.progress_bar);
-//        foundItems = 0;
-//        progressBar.setMax(items.size());
 
         Log.d(TAG, "onCreateView: started.");
         Log.d(TAG, "items initialized: " +items.toString());

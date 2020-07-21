@@ -9,31 +9,31 @@
     <!-- TODO: Update blank fragment layout -->
 
 
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pokemon_list_recyclerview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="510dp"
             android:layout_gravity="center_horizontal" />
 
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-            app:rcRadius="10dp"
-            app:rcBackgroundPadding="1dp"
-            app:rcReverse="false"
-            app:rcProgressColor="@color/colorBlack"
-            app:rcBackgroundColor="@color/colorGray"
+            android:id="@+id/progress_bar"
+            android:layout_width="260dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
             app:rcAnimationEnable="true"
             app:rcAnimationSpeedScale="1"
-            android:layout_height="30dp"
-            android:layout_width="260dp"
-            android:id="@+id/progress_bar"
-            android:layout_gravity="center_horizontal"/>
+            app:rcBackgroundColor="@color/colorGray"
+            app:rcBackgroundPadding="1dp"
+            app:rcProgressColor="@color/colorBlack"
+            app:rcRadius="10dp"
+            app:rcReverse="false" />
     </LinearLayout>
 
 
