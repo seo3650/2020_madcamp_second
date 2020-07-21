@@ -141,7 +141,7 @@ public class Fragment4 extends Fragment {
         setSupportActionBar(toolbar);
 
          */
-        /* Prepare camer button */
+        /* Prepare camera button */
         FloatingActionButton btnLaunchCamera = view.findViewById(R.id.btnLaunchCamera);
         btnLaunchCamera.setOnClickListener(new View.OnClickListener() {
             @Override

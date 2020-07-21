@@ -32,19 +32,19 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "LoginActivity class: started.");
 
         /* Fast login */
-        LoginManager.getInstance().retrieveLoginStatus(this, new LoginStatusCallback() {
-            @Override
-            public void onCompleted(AccessToken accessToken) {
-            }
-
-            @Override
-            public void onFailure() {
-            }
-
-            @Override
-            public void onError(Exception exception) {
-            }
-        });
+//        LoginManager.getInstance().retrieveLoginStatus(this, new LoginStatusCallback() {
+//            @Override
+//            public void onCompleted(AccessToken accessToken) {
+//            }
+//
+//            @Override
+//            public void onFailure() {
+//            }
+//
+//            @Override
+//            public void onError(Exception exception) {
+//            }
+//        });
         /* Login */
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -74,15 +74,15 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setReadPermissions("email");
 
         /* Check login */
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-        if (isLoggedIn) {
-            String userId = accessToken.getUserId();
-            Intent intent = new Intent();
-            intent.putExtra("userId", userId);
-            setResult(RESULT_OK, intent);
-            finish();
-        }
+//        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+//        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+//        if (isLoggedIn) {
+//            String userId = accessToken.getUserId();
+//            Intent intent = new Intent();
+//            intent.putExtra("userId", userId);
+//            setResult(RESULT_OK, intent);
+//            finish();
+//        }
 
 
         //Our custom Facebook button

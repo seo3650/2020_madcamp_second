@@ -3,6 +3,7 @@ package com.example.tab;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
@@ -141,7 +142,7 @@ public class PokemonList extends Fragment {
             public void onResponseReceived(HashSet<String> foundItems) {
                 progressBar.setProgress(0);
                 progressBar.setProgress(foundItems.size());
-                if (progressBar.getMax() > 0) { // TODO: change condition
+                if (progressBar.getMax() == progressBar.getProgress()) {
                     new SweetAlertDialog(Objects.requireNonNull(getContext()), SweetAlertDialog.SUCCESS_TYPE)
                             .setTitleText("Success!")
                             .setContentText("You found all items!\n"+ "Excellent:)")
@@ -191,7 +192,7 @@ public class PokemonList extends Fragment {
                                             Canvas comboImage = new Canvas(cs);
 
                                             comboImage.drawBitmap(diplomaBitmap, 0f, 0f, null);
-                                            comboImage.drawBitmap(nameBitmap, 950f, 670f, null);
+                                            comboImage.drawBitmap(nameBitmap, 800f, 500f, null);
 
                                             /* Share on Facebook */
                                             SharePhoto photo = new SharePhoto.Builder()
@@ -201,6 +202,7 @@ public class PokemonList extends Fragment {
                                                     .addPhoto(photo)
                                                     .build();
                                             shareButton.setShareContent(content);
+                                            shareButton.performClick();
                                         }
                                     });
                                 }

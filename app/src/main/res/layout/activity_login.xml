@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    android:background="@drawable/background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#42423F">
 
     <TextView
         android:id="@+id/bytes2"
@@ -17,21 +17,24 @@
         android:layout_alignParentLeft="true"
         android:layout_marginTop="68dp"
         android:gravity="top|center"
-        android:text="Immac Bytes"
+        android:text="DOGAM"
         android:textColor="#fff"
         android:textSize="30dp"
         android:textStyle="bold"
+        android:typeface="monospace"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgvw2" />
 
     <ImageView
+
         android:id="@+id/imgvw2"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/ib"
+        android:background="@drawable/border"
+        android:src="@drawable/pokedex"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -40,34 +43,33 @@
         app:layout_constraintVertical_bias="0.161" />
 
 
-
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="#FFFFFF"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.69"
-        android:visibility="gone"
-        />
+        app:layout_constraintVertical_bias="0.69" />
 
     <Button
         android:id="@+id/fb"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginBottom="144dp"
-        android:background="#3B5998"
+        android:layout_width="266dp"
+        android:layout_height="41dp"
+        android:layout_marginBottom="164dp"
+        android:background="@drawable/border"
         android:onClick="onClickFacebookButton"
-        android:text="Sign up with Facebook"
+        android:text="Sign in with Facebook"
         android:textAllCaps="false"
         android:textColor="#ffffff"
-        android:textSize="22sp"
+        android:textSize="18sp"
+        android:typeface="monospace"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
