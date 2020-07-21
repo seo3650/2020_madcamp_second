@@ -3,9 +3,11 @@ package com.example.tab;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 
 import  android.content.Intent;
 import android.net.Uri;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -324,14 +327,17 @@ public class Fragment4 extends Fragment {
         }
         File testFile = new File(pathToFile);
         Uri uri = FileProvider.getUriForFile(getActivity(), "com.thecodecity.cameraandroid.fileprovider", testFile);
+
+
+
         /* Get image */
         FirebaseVisionImage testImage;
-        try {
-            testImage = FirebaseVisionImage.fromFilePath(Objects.requireNonNull(getContext()), uri);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+//        try {
+//            testImage = FirebaseVisionImage.fromFilePath(Objects.requireNonNull(getContext()), uri);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return;
+//        }
 
         /* Get rotation */
         String cameraId = null;
@@ -350,7 +356,20 @@ public class Fragment4 extends Fragment {
         } catch (CameraAccessException e) {
             rotation = 0;
         }
+
+        /* Get image */
+        Bitmap bitmap = BitmapFactory.decodeFile(testFile.toString());
+        Bitmap rotatedBitmap = rotateImage(bitmap, rotation);
+        testImage = FirebaseVisionImage.fromBitmap(rotatedBitmap);
+
         LabelOfImage.analyze(testImage, rotation, labelsResponse);
+    }
+
+    public static Bitmap rotateImage(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
     }
 
      public static void getFromDatabase(String requiredImage, ImageResponse imageResponse) {

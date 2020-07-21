@@ -65,25 +65,25 @@ public class LabelOfImage {
         rotationCompensation = (rotationCompensation + sensorOrientation + 270) % 360;
 
         // Return the corresponding FirebaseVisionImageMetadata rotation value.
-        int result;
-        switch (rotationCompensation) {
-            case 0:
-                result = FirebaseVisionImageMetadata.ROTATION_0;
-                break;
-            case 90:
-                result = FirebaseVisionImageMetadata.ROTATION_90;
-                break;
-            case 180:
-                result = FirebaseVisionImageMetadata.ROTATION_180;
-                break;
-            case 270:
-                result = FirebaseVisionImageMetadata.ROTATION_270;
-                break;
-            default:
-                result = FirebaseVisionImageMetadata.ROTATION_0;
-                Log.e("labelOfImage", "Bad rotation value: " + rotationCompensation);
-        }
-        return result;
+//        int result;
+//        switch (rotationCompensation) {
+//            case 0:
+//                result = FirebaseVisionImageMetadata.ROTATION_0;
+//                break;
+//            case 90:
+//                result = FirebaseVisionImageMetadata.ROTATION_90;
+//                break;
+//            case 180:
+//                result = FirebaseVisionImageMetadata.ROTATION_180;
+//                break;
+//            case 270:
+//                result = FirebaseVisionImageMetadata.ROTATION_270;
+//                break;
+//            default:
+//                result = FirebaseVisionImageMetadata.ROTATION_0;
+//                Log.e("labelOfImage", "Bad rotation value: " + rotationCompensation);
+//        }
+        return rotationCompensation;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
