@@ -69,7 +69,7 @@ class ContactFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = lm
         recyclerView.setHasFixedSize(true)
-        recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+//        recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
 
         /* Get contacts */
         if (context?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_CONTACTS) }
