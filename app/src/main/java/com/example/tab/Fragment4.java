@@ -26,6 +26,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import com.akexorcist.roundcornerprogressbar.IconRoundCornerProgressBar;
 import com.facebook.internal.ImageResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
@@ -91,12 +92,14 @@ public class Fragment4 extends Fragment {
     private Spinner directorySpinner;
     private Button deleteButton;
     private KonfettiView konfettiView;
+    public static IconRoundCornerProgressBar progressBar;
 
 
     //vars
     private ArrayList<String> directories = new ArrayList<String>(); ;
     private String mAppend = "file:/";
     private String pathToFile;
+    public static int foundItems = 0;
 
 
     //pokemon
@@ -112,6 +115,10 @@ public class Fragment4 extends Fragment {
         konfettiView = view.findViewById(R.id.konfettiView);
         konfettiView.bringToFront();
         konfettiView.setElevation(3000);
+//        progressBar = view.findViewById(R.id.progress_bar);
+//        foundItems = 0;
+//        progressBar.setMax(items.size());
+
         Log.d(TAG, "onCreateView: started.");
         Log.d(TAG, "items initialized: " +items.toString());
 
@@ -246,6 +253,9 @@ public class Fragment4 extends Fragment {
                                                     }
                                                 })
                                                 .show();
+
+                                        foundItems += 1;
+//                                        progressBar.setProgress(foundItems);
                                         FragmentTransaction tr = getFragmentManager().beginTransaction();
                                         tr.replace(R.id.fragment4_layout, new Fragment4() );
                                         tr.commit();

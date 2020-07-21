@@ -95,6 +95,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-ml-vision-image-label-model:20.0.1'
     implementation 'com.github.thomper:sweet-alert-dialog:1.4.0'
     implementation 'nl.dionsegijn:konfetti:1.2.2'
+    implementation 'com.akexorcist:round-corner-progress-bar:2.1.1'
 
 }
 repositories {

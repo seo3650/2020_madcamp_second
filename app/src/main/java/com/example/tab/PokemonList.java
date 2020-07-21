@@ -10,7 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
+import com.akexorcist.roundcornerprogressbar.IconRoundCornerProgressBar;
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.akexorcist.roundcornerprogressbar.common.BaseRoundCornerProgressBar;
 import com.example.tab.Adapter.PokemonListAdapter;
 import com.example.tab.Common.Common;
 import com.example.tab.Common.ItemOffsetDecoration;
@@ -43,6 +47,9 @@ public class PokemonList extends Fragment {
     RecyclerView pokemon_list_recyclerview;
 
     static PokemonList instance;
+
+    private RoundCornerProgressBar progressBar;
+//    private ProgressBar progressBar;
 
     public static PokemonList getInstance(){
         if(instance == null){
@@ -85,8 +92,9 @@ public class PokemonList extends Fragment {
         ItemOffsetDecoration itemOffsetDecoration = new ItemOffsetDecoration(getActivity(), R.dimen.spacing);
         pokemon_list_recyclerview.addItemDecoration(itemOffsetDecoration);
 
-        fetchData(items);
-
+        progressBar = view.findViewById(R.id.progress_bar);
+        progressBar.setProgress(0);
+        progressBar.setMax(items.size());
         return view;
     }
 
@@ -119,9 +127,17 @@ public class PokemonList extends Fragment {
         );
 
          */
-        PokemonListAdapter adapter = new PokemonListAdapter(getActivity(), items);
+        PokemonListAdapter adapter = new PokemonListAdapter(getActivity(), items, new PokemonResponse() {
+            @Override
+            public void onResponseReceived(int foundItems) {
+                progressBar.setProgress(0);
+                progressBar.setProgress(foundItems);
+            }
+        });
         pokemon_list_recyclerview.setAdapter(adapter);
+    }
 
-
+    public interface PokemonResponse {
+        void onResponseReceived(int foundItems);
     }
 }

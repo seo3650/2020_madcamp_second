@@ -17,22 +17,13 @@ import com.bumptech.glide.Glide;
 import com.example.tab.Fragment4;
 import com.example.tab.ImageService;
 import com.example.tab.Model.Pokemon;
+import com.example.tab.PokemonList;
 import com.example.tab.R;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.util.List;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
-import static com.example.tab.MainActivity.url;
-import static com.example.tab.MainActivity.userId;
 
 import static com.example.tab.Fragment4.getFromDatabase;
 import com.example.tab.Fragment4.ImageResponse;
@@ -42,11 +33,15 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
 
     Context context;
     List<String> pokemonList;
+    private int foundItems;
+    private PokemonList.PokemonResponse pokemonResponse;
 
 
-    public PokemonListAdapter(Context context, List<String> pokemonList) {
+    public PokemonListAdapter(Context context, List<String> pokemonList,  PokemonList.PokemonResponse pokemonResponse) {
         this.context = context;
         this.pokemonList = pokemonList;
+        this.foundItems = 0;
+        this.pokemonResponse = pokemonResponse;
     }
 
     @NonNull
@@ -71,16 +66,13 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
                 if (res == null) {
                     Log.d("ImageService", "Download Failed. Loading default image.");
                     Glide.with(context).load(getDrawable(pokemonList.get(position))  ).into(holder.pokemon_image);
-
-
                     return;
                 }
+                foundItems += 1;
                 Log.d("ImageService", "Download Success");
 
                 Glide.with(context).load(res).into(holder.pokemon_image);
-
-
-
+                pokemonResponse.onResponseReceived(foundItems);
             }
         });
 
@@ -114,6 +106,7 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
     public int getItemCount() {
         return pokemonList.size();
     }
+//    public int getFoundItems() { return foundItems; }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView pokemon_image;

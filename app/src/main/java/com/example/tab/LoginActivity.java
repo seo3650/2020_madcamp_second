@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
 
         /* Check login */
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        boolean isLoggedIn = accessToken.getToken() != null && !accessToken.isExpired();
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
         if (isLoggedIn) {
             String userId = accessToken.getUserId();
             Intent intent = new Intent();
