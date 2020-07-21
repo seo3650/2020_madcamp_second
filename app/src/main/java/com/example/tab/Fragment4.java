@@ -224,7 +224,7 @@ public class Fragment4 extends Fragment {
                                 public void onResponseReceived(String item) {
                                     /* Success message */
                                     konfettiView.build()
-                                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                                            .addColors(Color.BLACK, Color.BLUE, Color.GRAY)
                                             .setDirection(0.0, 359.0)
                                             .setSpeed(1f, 5f)
                                             .setFadeOutEnabled(true)
@@ -246,9 +246,6 @@ public class Fragment4 extends Fragment {
                                                 }
                                             })
                                             .show();
-
-                                    foundItems += 1;
-//                                        progressBar.setProgress(foundItems);
                                     FragmentTransaction tr = getFragmentManager().beginTransaction();
                                     tr.replace(R.id.fragment4_layout, new Fragment4() );
                                     tr.commit();

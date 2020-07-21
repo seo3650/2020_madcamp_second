@@ -29,9 +29,9 @@
             android:layout_marginTop="10dp"
             app:rcAnimationEnable="true"
             app:rcAnimationSpeedScale="1"
-            app:rcBackgroundColor="#855C4F"
+            app:rcBackgroundColor="#9E9E9E"
             app:rcBackgroundPadding="1dp"
-            app:rcProgressColor="#290B0B"
+            app:rcProgressColor="#F5F5F5"
             app:rcRadius="10dp"
             app:rcReverse="false" />
     </LinearLayout>
