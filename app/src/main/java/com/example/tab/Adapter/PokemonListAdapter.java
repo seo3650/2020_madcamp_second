@@ -61,9 +61,22 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
 
         holder.pokemon_name.setText(pokemonList.get(position));
 
+        if (pokemonList.get(position) == "Computer") {
+            holder.pokemon_back_content.setText("Computer content");
+        } else if (pokemonList.get(position) == "Mobild Phone") {
+
+        } else if (pokemonList.get(position) == "Clock") {
+
+        } else if (pokemonList.get(position) == "Chair") {
+            
+        }
+
         getFromDatabase(  pokemonList.get(position)  ,new ImageResponse() {
             @Override
             public void onResponseReceived(Bitmap res) {
+                Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+                Bitmap bmp = Bitmap.createBitmap(100, 100, conf);
+                Glide.with(context).load(bmp).into(holder.pokemon_back_image);
                 if (res == null) {
                     Log.d("ImageService", "Download Failed. Loading default image.");
                     Glide.with(context).load(getDrawable(pokemonList.get(position))  ).into(holder.pokemon_image);
@@ -115,14 +128,16 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
     public class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView pokemon_image;
         TextView pokemon_name;
-
+        ImageView pokemon_back_image;
+        TextView pokemon_back_content;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-
             pokemon_image = (ImageView) itemView.findViewById(R.id.pokemon_image);
             pokemon_name = (TextView) itemView.findViewById(R.id.txt_pokemon_name);
+            pokemon_back_image = (ImageView) itemView.findViewById(R.id.pokemon_back_image);
+            pokemon_back_content = (TextView) itemView.findViewById(R.id.txt_pokemon_back);
         }
 
     }

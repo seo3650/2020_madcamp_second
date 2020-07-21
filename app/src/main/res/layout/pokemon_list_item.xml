@@ -18,42 +18,76 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <com.wajahatkarim3.easyflipview.EasyFlipView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:orientation="vertical"
-            android:padding="4dp">
-            <!-- may need modifications -->
+            android:layout_height="wrap_content"
+            app:flipOnTouch="true"
+            app:flipEnabled="true"
+            app:flipDuration="400"
+            app:flipFrom="right"
+            app:flipType="horizontal"
+            app:autoFlipBack="false"
+            >
 
-            <ImageView
-                android:id="@+id/pokemon_image"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_launcher_background"
-
-                />
-
-            <TextView
-                android:id="@+id/txt_pokemon_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <!-- Back Layout Goes Here -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:fontFamily="monospace"
-                android:text="Bulbasar"
-                android:textSize="18sp"
+                android:orientation="vertical"
+                android:padding="4dp">
+                <!-- may need modifications -->
+                <ImageView
+                    android:id="@+id/pokemon_back_image"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_launcher_background"
+                    />
+                <TextView
+                    android:id="@+id/txt_pokemon_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:fontFamily="monospace"
+                    android:text="Bulbasar"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:typeface="monospace" />
+            </LinearLayout>
 
-                android:textStyle="bold"
-                android:typeface="monospace" />
+            <!-- Front Layout Goes Here -->
 
 
-        </LinearLayout>
-
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="4dp">
+                <!-- may need modifications -->
+                <ImageView
+                    android:id="@+id/pokemon_image"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_launcher_background"
+                    />
+                <TextView
+                    android:id="@+id/txt_pokemon_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:fontFamily="monospace"
+                    android:text="Bulbasar"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:typeface="monospace" />
+            </LinearLayout>
+       </com.wajahatkarim3.easyflipview.EasyFlipView>
     </androidx.cardview.widget.CardView>
-
-
 </RelativeLayout>

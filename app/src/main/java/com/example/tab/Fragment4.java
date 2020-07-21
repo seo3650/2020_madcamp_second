@@ -135,21 +135,6 @@ public class Fragment4 extends Fragment {
         pDialog.setTitleText("Loading");
         pDialog.setCancelable(false);
         pDialog.show();
-
-        getFromDatabase("test", new ImageResponse() {
-            @Override
-            public void onResponseReceived(Bitmap res) {
-                pDialog.dismissWithAnimation();
-                if (res == null) {
-                    Log.d("ImageService", "Download Failed");
-                    return;
-                }
-                Log.d("ImageService", "Download Success");
-
-            }
-        });
-
-
         /*
         toolbar = (Toolbar) view.findViewById(R.id.toolbar2);
         toolbar.setTitle("POKEMON LIST");
@@ -194,6 +179,7 @@ public class Fragment4 extends Fragment {
             }
 
         });
+        pDialog.dismissWithAnimation();
 
         return view;
     }
