@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -45,11 +47,13 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import  android.content.Intent;
 import android.net.Uri;
+import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -94,6 +98,7 @@ public class Fragment2 extends Fragment {
     private ArrayList<String> directories = new ArrayList<String>(); ;
     private String mAppend = "file:/";
     private String pathToFile;
+    private String deletePath;
 
     //facebook
     private LoginButton loginButton;
@@ -179,10 +184,53 @@ public class Fragment2 extends Fragment {
 
         });
 
+        //registerForContextMenu(null);
+
+
+
+        registerForContextMenu(galleryImage);
         return view;
     }
 
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
 
+        getActivity().getMenuInflater().inflate(R.menu.gallery_menu, menu);
+
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.share_image:
+                shareButton.performClick();
+                return true;
+            case R.id.delete_image:
+
+
+                Log.d(TAG, "onContextItemSelected: delete selected. Deleting file.");
+                if (pathToFile == null) {return false;}
+                File file = new File(pathToFile);
+                boolean deleted = file.delete();
+                if (deleted){
+                    Log.d(TAG, pathToFile + " deleted successfully.");
+                    Toast.makeText(getActivity(), "Deleted selected image", Toast.LENGTH_SHORT);
+                } else {
+                    Log.d(TAG, "failed to delete " + pathToFile);
+                }
+
+                getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+                init();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+
+
+
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -194,24 +242,6 @@ public class Fragment2 extends Fragment {
 
             }
 
-            /*else if (requestCode == REQUET_VIDEO_CODE) {
-                Uri selectedVideo = data.getData();
-
-                ShareVideo video = new ShareVideo.Builder()
-                        .setLocalUrl(selectedVideo)
-                        .build();
-
-                ShareVideoContent videoContent = new ShareVideoContent.Builder()
-                        .setContentTitle("This is a useful video")
-                        .setContentDescription("Funny video from EDMT Dev download from YouTube")
-                        .setVideo(video)
-                        .build();
-
-                if (shareDialog.canShow(ShareVideoContent.class))
-                    shareDialog.show(videoContent);
-            }
-
-             */
 
             Log.d(TAG, "onActivityResult: done taking a photo.");
             Log.d(TAG, "onActivityResult: attempting to return to gallery.");
@@ -305,11 +335,17 @@ public class Fragment2 extends Fragment {
         if (imgURLs.size() > 0 ){
             setImage(imgURLs.get(0), galleryImage, mAppend);
             setShareButton(imgURLs.get(0));
+            pathToFile = null;
+
+
+
 
         } else {
             Log.d(TAG, "empty directory. Share button disabled.");
-            galleryImage.setImageResource( R.drawable.heads );
+            galleryImage.setImageResource( R.drawable.won_heads );
             setShareButton(null);
+
+
         }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -319,14 +355,6 @@ public class Fragment2 extends Fragment {
 
                 setImage(imgURLs.get(i), galleryImage, mAppend);
                 setShareButton(imgURLs.get(i));
-
-            /*
-            if (ShareDialog.canShow(SharePhotoContent.class)) {
-                shareDialog.show(content);
-            }
-             */
-
-
 
             }
         });
@@ -376,6 +404,11 @@ public class Fragment2 extends Fragment {
         Log.d(TAG, "setImage: setting Image");
         Log.d(TAG, "setImage: imgURL" + imgURL);
         Log.d(TAG, "setImage: append" + append);
+
+
+        if (imageView == galleryImage){
+            pathToFile =  imgURL;
+        }
 
 
         DisplayImageOptions GALLERY = new DisplayImageOptions.Builder()
