@@ -306,7 +306,7 @@ public class Fragment4 extends Fragment {
         }
         Pair<String, String> pair;
         if (matches.size() == 0){
-            pair = new Pair<>(null, matches.get(0));
+            pair = new Pair<>(null, null);
         } else {
             pair = new Pair<>(pathToFile, matches.get(0));
 
