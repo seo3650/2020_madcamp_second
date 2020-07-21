@@ -307,8 +307,9 @@ public class Fragment2 extends Fragment {
             setShareButton(imgURLs.get(0));
 
         } else {
-            galleryImage.setImageResource( R.drawable.search );
-            shareButton.setShareContent(null);
+            Log.d(TAG, "empty directory. Share button disabled.");
+            galleryImage.setImageResource( R.drawable.heads );
+            setShareButton(null);
         }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -333,6 +334,12 @@ public class Fragment2 extends Fragment {
     }
 
     private void setShareButton(String imgURL  ){
+
+        if (imgURL == null){
+            shareButton.setShareContent(null);
+            return;
+        }
+
         Bitmap bitmap = null;
         try {
             bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),  Uri.parse("file://" + imgURL));

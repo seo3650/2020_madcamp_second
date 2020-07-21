@@ -94,12 +94,15 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
                 return R.drawable.chair_silhouette;
             case "Clock":
                 return R.drawable.clock_silhouette;
+            case "Glasses":
+                return R.drawable.glasses;
             default:
                 return -1;
         }
 
 
     }
+
 
 
     @Override

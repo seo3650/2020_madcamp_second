@@ -116,7 +116,7 @@ public class Fragment4 extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment4_layout, container, false);
-        items = new ArrayList<>(Arrays.asList("Computer", "Mobile Phone", "Clock", "Chair"));
+        items = new ArrayList<>(Arrays.asList("Computer", "Mobile Phone", "Clock", "Chair", "Glasses"));
         konfettiView = view.findViewById(R.id.konfettiView);
         konfettiView.bringToFront();
         konfettiView.setElevation(3000);
@@ -224,6 +224,7 @@ public class Fragment4 extends Fragment {
                     public void onResponseReceived(ArrayList<String> res) {
                         ArrayList<String> labels = res;
                         Log.d(TAG, "onActivityResult: labels = " + labels.toString());
+                        Toast.makeText(getActivity(), labels.toString(), Toast.LENGTH_LONG).show();
                         Pair<String, ArrayList<String>> pair = matchLabels(pathToFile, labels);
                         String path = pair.first;
                         ArrayList<String> matches = pair.second;
@@ -286,6 +287,17 @@ public class Fragment4 extends Fragment {
                     }
                 });
             } else {
+
+                Log.d(TAG, "onActivityResults: camera aborted. Deleting temporary .jpg file");
+                File file = new File(pathToFile);
+                boolean deleted = file.delete();
+                if (deleted){
+                    Log.d(TAG, pathToFile + " deleted successfully.");
+                } else {
+                    Log.d(TAG, "failed to delete " + pathToFile);
+                }
+
+                getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
 
                 // delete undefined .jpg file?
             }
