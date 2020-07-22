@@ -43,8 +43,8 @@
                     android:layout_width="150dp"
                     android:layout_height="175dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
+                    android:padding="8dp"
+
                     android:fontFamily="monospace"
                     android:text="Bulbasar"
                     android:textSize="15sp"
