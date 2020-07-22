@@ -23,5 +23,5 @@ For discovered items, click the item card to flip it and get item details.
 The progress bar displays the current progress of your discovery. ( items found / total items )  
 If you collect all the pictures, we issue a certificate containing your name and developer!
 
-<img src="./demo1.jpg" width="120px" height="200px"></img><br/>
-<img src="./demo2.jpg" width="120px" height="200px"></img><br/>
+<img src="./demo1.jpg" width="240px" height="400px"></img><br/>
+<img src="./demo2.jpg" width="240px" height="400px"></img><br/>
