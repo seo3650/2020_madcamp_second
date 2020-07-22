@@ -159,7 +159,7 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
     }
 //    public int getFoundItems() { return foundItems; }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView pokemon_image;
         TextView pokemon_name;
         TextView pokemon_back_content;
@@ -173,6 +173,12 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
             pokemon_back_content = (TextView) itemView.findViewById(R.id.txt_pokemon_back);
             pokemon_card = (EasyFlipView) itemView.findViewById(R.id.pokemon_card);
             pokemon_card.setFlipEnabled(false);
+        }
+
+        @Override
+        public void onClick(View view) {
+            pokemon_card.flipTheView();
+//            if ()
         }
 
     }
