@@ -173,13 +173,15 @@ public class PokemonListAdapter extends RecyclerView.Adapter<PokemonListAdapter.
             pokemon_back_content = (TextView) itemView.findViewById(R.id.txt_pokemon_back);
             pokemon_card = (EasyFlipView) itemView.findViewById(R.id.pokemon_card);
             pokemon_card.setFlipEnabled(false);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("Pokemon item", "Click");
+                    pokemon_card.flipTheView();
+                }
+            });
         }
 
-        @Override
-        public void onClick(View view) {
-            pokemon_card.flipTheView();
-//            if ()
-        }
 
     }
 
